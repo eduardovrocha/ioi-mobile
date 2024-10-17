@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:binbin/models/profile_data.dart';
+import 'package:mrcatcash/models/profile_data.dart';
 import '../services/api_service.dart';
 
 /* funcional */
@@ -198,7 +198,7 @@ class _CollectListWidgeState extends State<CollectListWidge> {
                                                         width: 8.0),
                                                     // Espaço horizontal entre a imagem e o texto
                                                     Text(
-                                                        '${collectItem['token_amount']} \$IOIC',
+                                                        '${collectItem['token_amount']} \$MC3',
                                                         style: const TextStyle(
                                                             fontSize: 14,
                                                             color: Colors
@@ -404,7 +404,7 @@ class _CollectListWidgeState extends State<CollectListWidge> {
                                                   ),
                                                   const SizedBox(width: 8.0),
                                                   Text(
-                                                      '\$IOIC ${comingBindItem['attributes']['total_token_amount']}',
+                                                      '\$MC3 ${comingBindItem['attributes']['total_token_amount']}',
                                                       style: const TextStyle(
                                                           fontSize: 14
                                                       ))

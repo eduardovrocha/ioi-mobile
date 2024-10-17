@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:binbin/models/profile_data.dart';
+import 'package:mrcatcash/models/profile_data.dart';
 import '../services/api_service.dart';
 
 /* funcional */
@@ -145,7 +145,7 @@ class _ComingBindListWidgetState extends State<ComingBindListWidget> {
                                                   ),
                                                   const SizedBox(width: 8.0),
                                                   Text(
-                                                      '\$IOIC ${comingBindItem['attributes']['total_token_amount']}',
+                                                      '\$MC3 ${comingBindItem['attributes']['total_token_amount']}',
                                                       style: const TextStyle(
                                                           fontSize: 14
                                                       ))

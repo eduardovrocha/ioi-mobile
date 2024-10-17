@@ -1,4 +1,5 @@
 <resources>
     <!-- Define the color yellow -->
-    <color name="launch_background">#FFFF00</color> <!-- Hex code for yellow -->
+    <color name="launch_background">#FFFED86A</color> <!-- Hex code for yellow -->
+
 </resources>

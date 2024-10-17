@@ -1,0 +1,8 @@
+
+
+Build Report
+--------------------------
+App Version: 1.0.1+1
+App Bundle: app-release-v1.0.1.aab
+Bundle Version Info: <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:compileSdkVersion="34" android:compileSdkVersionCodename="14" android:versionCode="1" android:versionName="1.0.1" package="com.mrcatcash.development" platformBuildVersionCode="34" platformBuildVersionName="14">
+Build completed on: Qui 17 Out 2024 14:12:21 -03

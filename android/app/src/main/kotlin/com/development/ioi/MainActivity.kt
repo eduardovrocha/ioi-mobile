@@ -1,4 +1,4 @@
-package com.binbin.development
+package com.mrcatcash.development
 
 import io.flutter.embedding.android.FlutterActivity
 

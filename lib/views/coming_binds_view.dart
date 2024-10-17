@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:binbin/models/profile_data.dart';
-import 'package:binbin/widgets/coming_bind_list_widget.dart';
+import 'package:mrcatcash/models/profile_data.dart';
+import 'package:mrcatcash/widgets/coming_bind_list_widget.dart';
 import '../services/api_service.dart';
 
 class ComingBindsView extends StatefulWidget {

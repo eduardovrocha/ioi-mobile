@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:yaml/yaml.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
+
 import 'collects_view.dart';
 import 'coming_binds_view.dart';
 
@@ -18,6 +22,7 @@ class ReceivedNotesView extends StatefulWidget {
 }
 
 class _ReceivedNotesViewState extends State<ReceivedNotesView> {
+  String appVersion = 'v.1.0.1';
   final PageController _pageController = PageController(initialPage: 1);
   final ApiService apiService = ApiService();
 
@@ -33,6 +38,15 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> _loadAppVersion() async {
+    String pubspecContent = await rootBundle.loadString("~/pubspec.yaml");
+    print(pubspecContent);
+    Map yamlMap = jsonDecode(jsonEncode(loadYaml(pubspecContent)));
+    setState(() {
+      appVersion = 'v.${yamlMap['version']}';
+    });
   }
 
   void _onItemTapped(int index) {
@@ -94,7 +108,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                   builder: (context) {
                     return IconButton(
                       icon: Image.asset(
-                        'assets/images/menu.png',
+                        'assets/images/menu-left.png',
                         width: 30, height: 30,
                       ),
                       onPressed: () {
@@ -238,9 +252,9 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
+          DrawerHeader(
               decoration: BoxDecoration(color: Color(0xFFFED86A)),
-              child: Text('v.0.0.1')
+              child: Text(appVersion)
           ),
           ListTile(
             leading: Image.asset(
@@ -251,7 +265,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                 fontWeight: FontWeight.bold, fontSize: 17
             )),
             subtitle: Text(activeProfile.uniqueId, style: const TextStyle(
-              fontWeight: FontWeight.w300, fontSize: 12
+              fontWeight: FontWeight.w300, fontSize: 10
             )),
             onTap: () {
               Navigator.pop(context);
@@ -261,7 +275,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
               ); */
             },
           ),
-          ListTile(
+          /* ListTile(
             leading: Image.asset(
               'assets/images/resources-015.png',
               width: 24.0, // Largura da imagem
@@ -274,8 +288,10 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey)),
-            onTap: null,
-          ),
+            onTap: () {
+              apiService.cleanPresence();
+            }
+          ), */
         ],
       ),
     );

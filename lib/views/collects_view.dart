@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:binbin/models/profile_data.dart';
-import 'package:binbin/widgets/collect_list_widget.dart';
+import 'package:mrcatcash/models/profile_data.dart';
+import 'package:mrcatcash/widgets/collect_list_widget.dart';
 import '../services/api_service.dart';
+import 'package:yaml/yaml.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 
 class CollectsView extends StatefulWidget {
   // final Map<String, dynamic> data;  // Make it nullable
@@ -13,6 +16,7 @@ class CollectsView extends StatefulWidget {
 }
 
 class _CollectsViewState extends State<CollectsView> {
+  String appVersion = 'v.1.0.1';
   final ApiService apiService = ApiService(); // Initialize the API service
 
   Future<Map<String, dynamic>> fetchCollects() async {
@@ -25,6 +29,14 @@ class _CollectsViewState extends State<CollectsView> {
     super.initState();
   }
 
+  Future<void> _loadAppVersion() async {
+    String pubspecContent = await rootBundle.loadString('pubspec.yaml');
+    Map yamlMap = jsonDecode(jsonEncode(loadYaml(pubspecContent)));
+    setState(() {
+      appVersion = 'v.${yamlMap['version']}';
+    });
+  }
+
   Widget _buildRightDrawer(BuildContext context) {
     var activeProfile = widget.data;
 
@@ -32,9 +44,27 @@ class _CollectsViewState extends State<CollectsView> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Color(0xFFFED86A)),
-            child: Text('v.0.0.1')
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Color(0xFFFED86A), // Cor de fundo do header
+              image: DecorationImage(
+                image: AssetImage('assets/images/fluff-you.png'),
+                fit: BoxFit.none, opacity: 0.9,
+                alignment: Alignment(1.3, -1.7), // canto inferior direito
+                scale: 5,
+              )
+            ),
+            child: Align(
+              alignment: Alignment.topLeft, // Alinha o texto ao canto superior esquerdo
+              child: Text(
+                appVersion, // Versão do aplicativo
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Cor do texto
+                ),
+              ),
+            ),
           ),
           ListTile(
             leading: Image.asset(
@@ -55,7 +85,7 @@ class _CollectsViewState extends State<CollectsView> {
               height: 24.0, // Altura da imagem
               fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
             ),
-            title: Text('${activeProfile.tokens.amount} \$IOIC ', style:
+            title: Text('${activeProfile.tokens.amount} \$MC3 ', style:
             const TextStyle(
               fontSize: 16, fontWeight: FontWeight.w600,
             )),
@@ -117,8 +147,8 @@ class _CollectsViewState extends State<CollectsView> {
             builder: (context) {
               return IconButton(
                 icon: Image.asset(
-                  'assets/images/binbin-feliz.png', // Path to your image
-                  width: 36, height: 36,
+                  'assets/images/menu-right.png', // Path to your image
+                  width: 30, height: 30,
                 ),
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer(); // Open the right drawer
@@ -194,7 +224,7 @@ class _CollectsViewState extends State<CollectsView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('\$IOIC recebidas ${activeProfile.tokens.amount}',
+                              Text('\$MC3 recebidas ${activeProfile.tokens.amount}',
                                   style: const TextStyle(
                                       fontSize: 16, fontWeight: FontWeight.bold
                                   )),
@@ -215,7 +245,7 @@ class _CollectsViewState extends State<CollectsView> {
                     ),
                   ],
                 ),
-              ),  /* received tokens ($IOIC) */
+              ),  /* received tokens ($MC3) */
               SizedBox(
                 height: 10, // espaço inicial na lista
                 child: Stack(
