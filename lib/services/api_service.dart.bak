@@ -101,7 +101,7 @@ class ApiService {
 
     // Extract the data from the response (ensure it’s a List)
     final responseBody = json.decode(response.body);
-    print(responseBody);
+    /* print(responseBody); */
     /* final responseStatus = json.decode(response.statusCode.toString()); */
 
     if (responseBody != null) {

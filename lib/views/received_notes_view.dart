@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:yaml/yaml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'dart:io' show Platform;
 
+import '../widgets/copyable_wallet_number_widget.dart';
 import 'collects_view.dart';
 import 'coming_binds_view.dart';
 
@@ -22,66 +24,86 @@ class ReceivedNotesView extends StatefulWidget {
 }
 
 class _ReceivedNotesViewState extends State<ReceivedNotesView> {
-  String appVersion = 'v.1.0.1';
+  String appVersion = 'v.1.0.1 - Fluffy You';
   final PageController _pageController = PageController(initialPage: 1);
   final ApiService apiService = ApiService();
+  String? _uniqueId;
 
+  Future<Map<String, dynamic>> fetchComingBinds() async {
+    return apiService.fetchComingBinds();
+  }
   Future<Map<String, dynamic>> fetchReceivedNotes() async {
     return apiService.fetchReceivedNotes();
   }
-  String? _uniqueId;
+  Future<Map<String, dynamic>> fetchCollects() async {
+    return apiService.fetchCollects();
+  }
 
   late Future<List<dynamic>> receivedNotesFuture;
   late Future<ProfileData> profileDataFuture;
   int _selectedIndex = 1;
+  late ProfileData profileData = widget.profileData;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<void> _loadAppVersion() async {
-    String pubspecContent = await rootBundle.loadString("~/pubspec.yaml");
-    print(pubspecContent);
-    Map yamlMap = jsonDecode(jsonEncode(loadYaml(pubspecContent)));
-    setState(() {
-      appVersion = 'v.${yamlMap['version']}';
+    apiService.fetchProfileData().then((result) {
+      setState(() { profileData = result; });
     });
   }
+
+  /* void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _pageController.jumpToPage(index);
+    });
+  } */
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       _pageController.jumpToPage(index);
     });
+
+    print(index);
+
+    // Abrir o leitor de QR code ao clicar no item "Vouchers"
+    if (index == 1) {
+      Navigator.push(
+        context, MaterialPageRoute(builder: (context) => QRScannerWidget(profileData: profileData)),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    late ProfileData profileData = widget.profileData;
 
+    // late ProfileData profileData = widget.profileData;
     return GestureDetector(
       onVerticalDragUpdate: (details) {
-        if (details.delta.dy < -10) {
-          Navigator.push(
-            context, MaterialPageRoute(builder: (context) => QRScannerWidget(profileData: profileData)),
-          );
-        }
+        // if (details.delta.dy < -10) {
+        //   Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => QRScannerWidget(profileData: profileData)),
+        //   );
+        // }
       },
       child: Scaffold(  /* main content */
         body: PageView(
           controller: _pageController,
           onPageChanged: (index) {
-            if (index == 0) {} /* coming binds */
+            print('----> $index');
+            apiService.fetchProfileData().then((result) {
+              setState(() { profileData = result; });
+            });
+            if (index == 0) {
+              fetchComingBinds();
+            } /* coming binds */
             if (index == 1) {
-              apiService.fetchProfileData()
-              .then((result) {
-                setState(() {
-                  profileData = result; // Update the profileData and build
-                });
-              });
+              fetchReceivedNotes();
             } /* received notes */
-            if (index == 2) {} /* received notes */
+            if (index == 2) {
+              fetchCollects();
+            } /* received notes */
             setState(() {
               _selectedIndex = index;
             });
@@ -117,7 +139,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                     );
                   },
                 ),
-                actions: [
+                /* actions: [
                   IconButton(
                     icon: Image.asset(
                       'assets/images/menu-qrcode.png',
@@ -129,7 +151,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                       );
                     },
                   ),
-                ],
+                ], */
               ),  /*  app main bar  */
               backgroundColor: const Color(0xFFF5F5F5),
               drawer: _buildDrawer(context, profileData),
@@ -147,13 +169,7 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                               padding: EdgeInsets.only(top: 24.0),
                               child: Stack(),
                             ),
-                            Text(
-                              profileData.uniqueId,
-                              style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.normal,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
+                            CopyableWalletNumberWidget(uniqueId: profileData.uniqueId),
                           ],
                         ),
                       ),  /*  header  */
@@ -168,12 +184,12 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text('..'),
+                                  Text(''),
                                   Padding(
                                     padding: EdgeInsets.only(right: 8.0),
                                     child: Stack(),
                                   ),
-                                  Text('.'),
+                                  Text(''),
                                   Padding(
                                     padding: EdgeInsets.only(right: 8.0),
                                     child: Stack(),
@@ -193,19 +209,19 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
                                     padding: EdgeInsets.only(right: 8.0),
                                     child: Stack(),
                                   ),
-                                  Text('.'),
+                                  Text(''),
                                   Padding(
                                     padding: EdgeInsets.only(right: 8.0),
                                     child: Stack(),
                                   ),
-                                  Text('..'),
+                                  Text(''),
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      ReceivedNoteListWidget(profileData: profileData)
+                      ReceivedNoteListWidget()
                     ],
                   ),
                 ],
@@ -222,21 +238,31 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
               'assets/images/resources-006.png',
               width: 24, height: 24,
             ),
-            label: '~histórico~',
+            label: 'Histórico',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/images/resources-019.png',
-              width: 24, height: 24,
+            icon: Container(
+              width: 30, height: 30,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle, // Torna o container circular
+                /* color: Color(0xFFFED86A), */
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/images/resources-021.png',
+                  width: 24, // Tamanho da imagem
+                  height: 24,
+                ),
+              ),
             ),
-            label: '~Vouchers~',
+            label: 'Vouchers',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               'assets/images/resources-016.png',
               width: 24, height: 24,
             ),
-            label: '~recompensas~',
+            label: 'Recompensas',
           ),
         ],
           onTap: _onItemTapped,
@@ -264,9 +290,9 @@ class _ReceivedNotesViewState extends State<ReceivedNotesView> {
             title: const Text('~ Anônimo ~', style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 17
             )),
-            subtitle: Text(activeProfile.uniqueId, style: const TextStyle(
+            /* subtitle: Text(activeProfile.uniqueId, style: const TextStyle(
               fontWeight: FontWeight.w300, fontSize: 10
-            )),
+            )), */
             onTap: () {
               Navigator.pop(context);
               /* Navigator.push(context,

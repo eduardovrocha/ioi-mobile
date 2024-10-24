@@ -5,6 +5,9 @@ import '../services/api_service.dart';
 import 'package:yaml/yaml.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
+import 'dart:io' show Platform;
+
+import '../widgets/copyable_wallet_number_widget.dart';
 
 class CollectsView extends StatefulWidget {
   // final Map<String, dynamic> data;  // Make it nullable
@@ -29,13 +32,13 @@ class _CollectsViewState extends State<CollectsView> {
     super.initState();
   }
 
-  Future<void> _loadAppVersion() async {
+  /* Future<void> _loadAppVersion() async {
     String pubspecContent = await rootBundle.loadString('pubspec.yaml');
     Map yamlMap = jsonDecode(jsonEncode(loadYaml(pubspecContent)));
     setState(() {
       appVersion = 'v.${yamlMap['version']}';
     });
-  }
+  } */
 
   Widget _buildRightDrawer(BuildContext context) {
     var activeProfile = widget.data;
@@ -44,24 +47,28 @@ class _CollectsViewState extends State<CollectsView> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color(0xFFFED86A), // Cor de fundo do header
-              image: DecorationImage(
-                image: AssetImage('assets/images/fluff-you.png'),
-                fit: BoxFit.none, opacity: 0.9,
-                alignment: Alignment(1.3, -1.7), // canto inferior direito
-                scale: 5,
-              )
-            ),
-            child: Align(
-              alignment: Alignment.topLeft, // Alinha o texto ao canto superior esquerdo
-              child: Text(
-                appVersion, // Versão do aplicativo
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black, // Cor do texto
+          ClipRect( // Envolvendo o DrawerHeader com ClipRect
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: const Color(0xFFFED86A), // Cor de fundo do header
+                image: DecorationImage(
+                  image: const AssetImage('assets/images/fluff-you.png'),
+                  fit: BoxFit.none,
+                  opacity: 1,
+                  alignment: Platform.isIOS ? const Alignment(1,1) :
+                  const Alignment(1,1),
+                  scale: Platform.isIOS ? 5.5 : 6,
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.topLeft, // Alinha o texto ao canto superior esquerdo
+                child: Text(
+                  appVersion, // Versão do aplicativo
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // Cor do texto
+                  ),
                 ),
               ),
             ),
@@ -73,53 +80,68 @@ class _CollectsViewState extends State<CollectsView> {
               height: 24.0, // Altura da imagem
               fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
             ),
-            title: const Text('Wallet', style: TextStyle(
-              fontSize: 17, fontWeight: FontWeight.bold,
-            )),
+            title: const Text(
+              'Wallet',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             onTap: () {},
           ),
           ListTile(
             leading: Image.asset(
               'assets/images/resources-020.png',
-              width: 24.0, // Largura da imagem
-              height: 24.0, // Altura da imagem
-              fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
+              width: 24.0,
+              height: 24.0,
+              fit: BoxFit.contain,
             ),
-            title: Text('${activeProfile.tokens.amount} \$MC3 ', style:
-            const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600,
-            )),
+            title: Text(
+              '${activeProfile.tokens.amount} \$MC3',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             onTap: () {},
           ),
           ListTile(
             leading: Image.asset(
               'assets/images/resources-006.png',
-              width: 24.0, // Largura da imagem
-              height: 24.0, // Altura da imagem
-              fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
+              width: 24.0,
+              height: 24.0,
+              fit: BoxFit.contain,
             ),
-            title: Text('R\$ ${activeProfile.currency.amount} '
-                '*', style:
-            const TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600,
-            )),
+            title: Text(
+              'R\$ ${activeProfile.currency.amount} *',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             onTap: () {},
           ),
           ListTile(
             leading: Image.asset(
               'assets/images/resources-018.png',
-              width: 24.0, // Largura da imagem
-              height: 24.0, // Altura da imagem
-              fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
+              width: 24.0,
+              height: 24.0,
+              fit: BoxFit.contain,
             ),
-            title: const Text('0,0%', style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey
-            )),
+            title: const Text(
+              '0,0%',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
             onTap: null,
           ),
         ],
       ),
     );
+
   }
 
   @override
@@ -200,7 +222,7 @@ class _CollectsViewState extends State<CollectsView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(activeProfile.uniqueId),
+                          CopyableWalletNumberWidget(uniqueId: activeProfile.uniqueId),
                         ],
                       ),
                     ),
@@ -224,10 +246,26 @@ class _CollectsViewState extends State<CollectsView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('\$MC3 recebidas ${activeProfile.tokens.amount}',
+                              RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
                                   style: const TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.bold
-                                  )),
+                                      fontSize: 14,
+                                      color: Colors.black38,
+                                      height: 1.7),
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                        text: '\$MC3 recebidas: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.black)),
+                                    TextSpan(text: '${activeProfile.tokens
+                                        .amount}', style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black))
+                                  ],
+                                ),
+                              ),
                               const SizedBox(width: 8.0),
                               Image.asset(
                                 'assets/images/resources-020.png',
@@ -262,7 +300,7 @@ class _CollectsViewState extends State<CollectsView> {
                   ],
                 ),
               ),
-              CollectListWidge(profileData: activeProfile)
+              CollectListWidge()
             ],
           ),
         ],

@@ -107,31 +107,52 @@ class _ComingBindListWidgetState extends State<ComingBindListWidget> {
                               children: [
                                 Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 15.0, left: 10.0, right: 10.0
+                                        top: 15.0, left: 10, right: 10
                                     ),
                                     child: Column(
                                       children: [
-                                        Text(
-                                            '${comingBindItem['attributes']['company_name']}',
+                                        RichText(
+                                          text: TextSpan(
                                             style: const TextStyle(
-                                                fontSize: 14, fontWeight: FontWeight.bold
-                                            )),
+                                                fontSize: 13, height: 1.5,
+                                                color: Colors.black,
+                                                letterSpacing: 1
+                                            ),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                text: '${comingBindItem['attributes']['company_name']}',
+                                                style: TextStyle(fontWeight: FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                         Padding(
                                             padding: const EdgeInsets.only(
-                                              top: 10, left: 10, right: 10,
+                                              top: 10, left: 5, right: 5,
                                             ),
                                             child: Row(
                                                 children: [
                                                   Image.asset(
                                                     'assets/images/resources-006.png',
-                                                    width: 20, height: 20, fit: BoxFit.cover,
+                                                    width: 16, height: 16,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                   const SizedBox(width: 8.0),
-                                                  Text(
-                                                      'R\$ ${comingBindItem['attributes']['total_currency_amount']}',
+                                                  RichText(
+                                                    text: TextSpan(
                                                       style: const TextStyle(
-                                                          fontSize: 14
-                                                      ))
+                                                          fontSize: 11, height: 1.5,
+                                                          color: Colors.black,
+                                                          letterSpacing: 1
+                                                      ),
+                                                      children: <TextSpan>[
+                                                        TextSpan(
+                                                          text: 'R\$ ${comingBindItem['attributes']['total_currency_amount']}',
+                                                          style: TextStyle(fontWeight: FontWeight.normal),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ])),
                                         Padding(
                                             padding: const EdgeInsets.only(
@@ -141,14 +162,26 @@ class _ComingBindListWidgetState extends State<ComingBindListWidget> {
                                                 children: [
                                                   Image.asset(
                                                     'assets/images/resources-020.png',
-                                                    width: 20, height: 20, fit: BoxFit.cover,
+                                                    width: 16, height: 16,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                   const SizedBox(width: 8.0),
-                                                  Text(
-                                                      '\$MC3 ${comingBindItem['attributes']['total_token_amount']}',
+                                                  RichText(
+                                                    text: TextSpan(
                                                       style: const TextStyle(
-                                                          fontSize: 14
-                                                      ))
+                                                          fontSize: 11, height: 1.5,
+                                                          color: Colors.black,
+                                                          letterSpacing: 1
+                                                      ),
+                                                      children: <TextSpan>[
+                                                        TextSpan(
+                                                          text: '\$MC3 ${comingBindItem['attributes']['total_token_amount']}',
+                                                          style: TextStyle
+                                                            (fontWeight: FontWeight.bold),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
                                                 ])),
                                       ],
                                     )
@@ -161,93 +194,26 @@ class _ComingBindListWidgetState extends State<ComingBindListWidget> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
-                                      title: Text(
-                                        '${comingBindItem['attributes']['protocol']}',
-                                        style: const TextStyle(
-                                            fontSize: 14, fontWeight: FontWeight.bold
+                                      title: RichText(
+                                        text: TextSpan(
+                                          style: const TextStyle(
+                                              fontSize: 11, height: 1.5,
+                                              color: Colors.black,
+                                              letterSpacing: 1
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text: '${comingBindItem['attributes']['protocol']}',
+                                              style: TextStyle(fontWeight: FontWeight.normal),
+                                            )
+                                          ],
                                         ),
-                                        textAlign: TextAlign.right,
                                       ),
                                     ),
                                   ),
                                 ),
                               ],
                             ));
-                        // return Container(
-                        //   margin: const EdgeInsets.all(0.0),
-                        //   decoration: BoxDecoration(
-                        //     color: Colors.white70,
-                        //     borderRadius: BorderRadius.circular(10.0),
-                        //     border: Border.all(
-                        //       color: Colors.black12,
-                        //       width: 0.0,
-                        //     ),
-                        //   ),
-                        //   child: Stack(
-                        //     children: [
-                        //       Positioned(
-                        //         top: 60,
-                        //         left: 60,
-                        //         bottom: 20,
-                        //         right: 20,
-                        //         child: Opacity(
-                        //           opacity: 0.3,
-                        //           child: SizedBox(
-                        //             width: 100,
-                        //             height: 100,
-                        //             child: Image.asset(
-                        //               'assets/images/resources-003.png',
-                        //               fit: BoxFit.cover,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       Positioned(
-                        //         top: 0,
-                        //         left: 0,
-                        //         right: 0,
-                        //         child: Padding(
-                        //           padding: const EdgeInsets.all(0.0),
-                        //           child: ListTile(
-                        //             shape: RoundedRectangleBorder(
-                        //               borderRadius: BorderRadius.circular(15.0),
-                        //             ),
-                        //             leading: Image.asset(
-                        //               'assets/images/6819843.png',
-                        //               width: 20,
-                        //               height: 20,
-                        //               fit: BoxFit.cover,
-                        //             ),
-                        //             title: Text(
-                        //               '${noteItem['attributes']['created_at']}',
-                        //               style: const TextStyle(
-                        //                 fontSize: 14,
-                        //                 fontWeight: FontWeight.bold,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       Positioned(
-                        //         bottom: 0,
-                        //         left: 0,
-                        //         right: 10,
-                        //         child: Padding(
-                        //           padding: const EdgeInsets.all(0.0),
-                        //           child: ListTile(
-                        //             leading: Image.asset(
-                        //               noteItem['attributes']['realized']
-                        //                   ? 'assets/images/resources-014.png'
-                        //                   : 'assets/images/resources-013.png',
-                        //               width: 20,
-                        //               height: 20,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // );
                       },
                     )));
                 } else {

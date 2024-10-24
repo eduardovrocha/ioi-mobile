@@ -3,20 +3,29 @@ import 'package:mrcatcash/models/profile_data.dart';
 import '../services/api_service.dart';
 
 /* funcional */
-
 class CollectListWidge extends StatefulWidget {
-  final ProfileData profileData;
-  const CollectListWidge({super.key, required this.profileData});
+
 
   @override
   _CollectListWidgeState createState() => _CollectListWidgeState();
 }
 
 class _CollectListWidgeState extends State<CollectListWidge> {
-  /* final ScrollController _scrollController = ScrollController(); */
+  /*
+  final ScrollController _scrollController = ScrollController();
+  */
   final ApiService apiService = ApiService();
   Map<String, dynamic>? meta; // State variable to hold the 'meta' data
-  /* bool _showBackToTopButton = false; */
+  late ProfileData profile = ProfileData(
+      uniqueId: '',
+      createdAt: DateTime.now(),
+      vouchers: Vouchers(valid: 0, invalid: 0, count: 0),
+      tokens: Tokens(amount: '0.0', collected: 0),
+      currency: Currency(amount: '0.0')
+  );
+  /*
+  bool _showBackToTopButton = false;
+  */
 
   @override
   void dispose() {
@@ -34,6 +43,9 @@ class _CollectListWidgeState extends State<CollectListWidge> {
 
   @override
   Widget build(BuildContext context) {
+    apiService.fetchProfileData().then((response) {
+      profile = response;
+    });
     /* _scrollController.addListener(() {
       if (_scrollController.offset >= 300) {
         setState(() {

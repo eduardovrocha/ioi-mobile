@@ -90,6 +90,11 @@ class ApiService {
   /* [revised] */
   Future<ProfileData> fetchProfileData() async {
     String? profileId = await getProfileId();
+    String? uniqueId = await getUniqueId();
+
+    print(profileId);
+    print(uniqueId);
+
     final headers = {
       'Content-Type': 'application/json',
       'profileId': profileId ?? '',  // Use empty string if profileId is null
@@ -101,10 +106,10 @@ class ApiService {
 
     // Extract the data from the response (ensure it’s a List)
     final responseBody = json.decode(response.body);
-    print(responseBody);
-    /* final responseStatus = json.decode(response.statusCode.toString()); */
+    final responseStatus = json.decode(response.statusCode.toString()); /**/
 
-    if (responseBody != null) {
+    /* if (responseBody != null) { */
+    if (responseStatus == 200) {
       var attributesToMap = responseBody['profile']['data']['attributes'];  // Access the first
 
       return ProfileData.fromJson(attributesToMap);

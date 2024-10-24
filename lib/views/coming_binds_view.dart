@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrcatcash/models/profile_data.dart';
 import 'package:mrcatcash/widgets/coming_bind_list_widget.dart';
+import 'package:mrcatcash/widgets/copyable_wallet_number_widget.dart';
 import '../services/api_service.dart';
 
 class ComingBindsView extends StatefulWidget {
@@ -13,6 +14,13 @@ class ComingBindsView extends StatefulWidget {
 
 class _ComingBindsViewState extends State<ComingBindsView> {
   final ApiService apiService = ApiService(); // Initialize the API service
+  late ProfileData profile = ProfileData(
+      uniqueId: '',
+      createdAt: DateTime.now(),
+      vouchers: Vouchers(valid: 0, invalid: 0, count: 0),
+      tokens: Tokens(amount: '0,0', collected: 0),
+      currency: Currency(amount: '0.0')
+  );
 
   Future<Map<String, dynamic>> fetchComingBinds() async {
     return apiService.fetchReceivedNotes();
@@ -22,11 +30,14 @@ class _ComingBindsViewState extends State<ComingBindsView> {
   @override
   void initState() {
     super.initState();
+    apiService.fetchProfileData().then((response) {
+      profile = response;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    var activeProfile = widget.data;
+    var activeProfile = profile;
 
     return Scaffold(
       appBar: AppBar(
@@ -48,14 +59,7 @@ class _ComingBindsViewState extends State<ComingBindsView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0),
-                  child: Text(
-                    activeProfile.uniqueId,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: CopyableWalletNumberWidget(uniqueId: activeProfile.uniqueId),
                 ),
               ],
             ),
@@ -100,11 +104,32 @@ class _ComingBindsViewState extends State<ComingBindsView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  color: Colors.black,
+                                  letterSpacing: 1.5
+                              ),
+                              children: <TextSpan>[
+                                const TextSpan(
+                                  text: 'Valores Processados: ',
+                                  style: TextStyle(fontWeight: FontWeight.normal),
+                                ),
+                                TextSpan(
+                                  text: 'R\$ ${activeProfile.currency.amount}',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          /*
                           Text(
                               'Valores Processados R\$ ${activeProfile.currency.amount}',
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold
-                              )),   /* display profile data */
+                              )),   /* display profile data */ */
                           const SizedBox(width: 8.0),
                           Image.asset(
                             'assets/images/resources-006.png',

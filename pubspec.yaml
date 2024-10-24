@@ -62,7 +62,6 @@ flutter_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/paw-mark-ii.png
     - assets/images/fluff-you.png
     - assets/images/icone-transparent.png
     - assets/images/mr-cat-cash.png
@@ -71,13 +70,11 @@ flutter:
     - assets/images/menu-qrcode.png
     - assets/images/resources-003.png
     - assets/images/resources-004.png
-    - assets/images/resources-005.png
+    - assets/images/resources-004-small.png
     - assets/images/resources-006.png
     - assets/images/resources-007.png
     - assets/images/resources-008.png
-    - assets/images/resources-009.png
     - assets/images/resources-010.png
-    - assets/images/resources-011.png
     - assets/images/resources-012.png
     - assets/images/resources-013.png
     - assets/images/resources-014.png
@@ -87,6 +84,7 @@ flutter:
     - assets/images/resources-018.png
     - assets/images/resources-020.png
     - assets/images/resources-019.png
+    - assets/images/resources-021.png
 
   fonts:
     - family: Anton
