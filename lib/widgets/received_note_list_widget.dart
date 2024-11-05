@@ -31,7 +31,7 @@ class _ReceivedNoteListWidgetState extends State<ReceivedNoteListWidget> {
     // Obtendo as dimensões da tela
     var screenSize = MediaQuery.of(context).size;
     var screenWidth = screenSize.width;
-    print(screenSize);
+    /* print(screenSize); */
 
     return Expanded(
       child: Column(
@@ -143,7 +143,7 @@ class _ReceivedNoteListWidgetState extends State<ReceivedNoteListWidget> {
               } else if (snapshot.hasData) {
                 // Extract 'data' and 'meta' from the snapshot
                 final data = snapshot.data!['data'] as List<dynamic>;
-                final meta = snapshot.data!['meta'] as Map<String, dynamic>;
+                /* final meta = snapshot.data!['meta'] as Map<String, dynamic>; */
 
                 if (data.isNotEmpty) {
                   return Expanded(

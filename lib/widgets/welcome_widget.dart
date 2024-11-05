@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:mrcatcash/views/received_notes_view.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/api_service.dart';

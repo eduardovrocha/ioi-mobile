@@ -51,7 +51,7 @@ class _ComingBindListWidgetState extends State<ComingBindListWidget> {
                               textAlign: TextAlign.center,
                               text: TextSpan(
                                 style: const TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 14,
                                     color: Colors.black38, height: 1.7
                                 ),
                                 children: <TextSpan>[

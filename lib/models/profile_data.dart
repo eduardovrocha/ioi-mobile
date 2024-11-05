@@ -78,7 +78,7 @@ class Currency {
 
   // Factory method to parse JSON into Currency with number validation
   factory Currency.fromJson(Map<String, dynamic> json) {
-    print(json['amount']);
+    /* print(json['amount']); */
     return Currency(
         // json['amount']
       amount: json['amount'] ?? '0.0' ?? '0.0',

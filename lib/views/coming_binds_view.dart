@@ -21,11 +21,17 @@ class _ComingBindsViewState extends State<ComingBindsView> {
       tokens: Tokens(amount: '0,0', collected: 0),
       currency: Currency(amount: '0.0')
   );
+  late Map shard = {};
 
   Future<Map<String, dynamic>> fetchComingBinds() async {
     return apiService.fetchReceivedNotes();
   }
+  Future<Map<String, dynamic>> fetchShards() async {
+    return apiService.fetchShards();
+  }
+
   late Future<List<dynamic>> comingBindsFuture; // Fetching binds
+  late Future<List<dynamic>> comingShardsFuture;
 
   @override
   void initState() {
@@ -38,6 +44,11 @@ class _ComingBindsViewState extends State<ComingBindsView> {
   @override
   Widget build(BuildContext context) {
     var activeProfile = profile;
+    apiService.fetchShards().then((response) {
+      shard = response['data'][1];
+    });
+
+    late String until_next_shard = shard['next_execution_in']?? "00:00:00";
 
     return Scaffold(
       appBar: AppBar(
@@ -68,21 +79,29 @@ class _ComingBindsViewState extends State<ComingBindsView> {
             constraints: const BoxConstraints(
                 minWidth: double.infinity, maxWidth: double.infinity
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(top: 0.0),
-                      child: Text(
-                        'sharding atual 00:05:40', style:
-                      TextStyle
-                        (fontSize:
-                      14,
-                          fontWeight:
-                      FontWeight.normal
-                      ),
-                    textAlign: TextAlign.center,
-                  ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      height: 1.5,
+                                      color: Colors.black,
+                                      letterSpacing: 1.5),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: 'Próximo colheita em: $until_next_shard',
+                                      style: TextStyle(fontWeight: FontWeight.normal),
+                                    )
+                                  ])),
+                        ],
+                      )
                 ))
               ],
             ),

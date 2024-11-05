@@ -1,24 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mrcatcash/views/received_notes_view.dart';
+import 'package:mrcatcash/widgets/custom_snackbar_widget.dart';
 import 'package:mrcatcash/widgets/welcome_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api_service.dart';
 
-class SplashScreenWidget extends StatefulWidget {
+class UpdateProfileScreenWidget extends StatefulWidget {
   final String? uniqueId;
 
-  const SplashScreenWidget({super.key, this.uniqueId});
+  const UpdateProfileScreenWidget({super.key, this.uniqueId});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _UpdateProfileScreenWidget createState() => _UpdateProfileScreenWidget();
 }
 
-class _SplashScreenState extends State<SplashScreenWidget> {
+class _UpdateProfileScreenWidget extends State<UpdateProfileScreenWidget> {
   final ApiService apiService = ApiService();
   String? _uniqueId;
-  String _statusMessage = 'Acordado e procurando perfil';  // Step 1:
-  // Declare a status message
+  String _statusMessage = 'Aguarde, as configurações do aplicativo estão '
+      'sendo atualizadas';  // Step 1:
 
   @override
   void initState() {
@@ -44,7 +45,8 @@ class _SplashScreenState extends State<SplashScreenWidget> {
     } else {
       apiService.fetchProfileData().then((profileData) {
         setState(() {
-          _statusMessage = 'informação do perfil ${profileId} está ativa ';
+          _statusMessage = 'Aguarde, as configurações do aplicativo estão '
+              'sendo atualizadas';
         });
 
         Navigator.pushReplacement(
@@ -77,14 +79,13 @@ class _SplashScreenState extends State<SplashScreenWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 80),
-            Image.asset(
+            /* Image.asset(
               'assets/images/mr-cat-cash.png',
               width: 300,
               height: 300,
             ),
-            const SizedBox(height: 20),
-            Text('~ Mr. Cat Cash ~',
-                style: TextStyle(
+            const SizedBox(height: 20), */
+            Text('', style: TextStyle(
                     fontFamily: 'Anton',
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -99,11 +100,14 @@ class _SplashScreenState extends State<SplashScreenWidget> {
             const SizedBox(height: 80),
             const CircularProgressIndicator(),
             const SizedBox(height: 120),
-            Text(_statusMessage,  // Step 3: Display the status message
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                ))
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(_statusMessage,  // Step 3: Display the status message
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  )),
+            ),
           ],
         ),
       ),

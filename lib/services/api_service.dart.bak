@@ -5,7 +5,7 @@ import 'package:mrcatcash/models/profile_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-                                                                                                                                                                                                                                                                final String baseUrl = 'https://octopus-app-sr6qw.ondigitalocean.app';
+    final String baseUrl = 'http://192.168.12.184:3020';
 
   /* [revised] */
   Future<String> createProfile(Map<String, dynamic> data) async {
@@ -70,6 +70,7 @@ class ApiService {
         Uri.parse('$baseUrl/coming_binds'),
         headers: headers,
       );
+      /* print(response.body); */
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
 
@@ -90,6 +91,11 @@ class ApiService {
   /* [revised] */
   Future<ProfileData> fetchProfileData() async {
     String? profileId = await getProfileId();
+    String? uniqueId = await getUniqueId();
+
+    /* print(profileId); */
+    /* print(uniqueId); */
+
     final headers = {
       'Content-Type': 'application/json',
       'profileId': profileId ?? '',  // Use empty string if profileId is null
@@ -101,10 +107,10 @@ class ApiService {
 
     // Extract the data from the response (ensure it’s a List)
     final responseBody = json.decode(response.body);
-    /* print(responseBody); */
-    /* final responseStatus = json.decode(response.statusCode.toString()); */
+    final responseStatus = json.decode(response.statusCode.toString()); /**/
 
-    if (responseBody != null) {
+    /* if (responseBody != null) { */
+    if (responseStatus == 200) {
       var attributesToMap = responseBody['profile']['data']['attributes'];  // Access the first
 
       return ProfileData.fromJson(attributesToMap);
@@ -130,6 +136,35 @@ class ApiService {
 
         final responseData = responseBody['collects']['data'] ?? [];
         final responseMeta = responseBody['collects']['meta'] ?? {};
+        return {
+          'data': responseData is List ? responseData : [responseData],  // Ensure data is always a List
+          'meta': responseMeta,  // Meta information
+        };
+      } else {
+        throw Exception('Unexpected response format');
+      }
+    } catch (e) {
+      throw Exception('Error fetching collects: $e');
+    }
+  }
+
+  /* [revised] */
+  Future<Map<String, dynamic>> fetchShards() async {
+    try {
+      String? profileId = await getProfileId();
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '',  // Use empty string if profileId is null
+      };
+      final response = await http.get(
+        Uri.parse('$baseUrl/last_job_execution.json'),
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+
+        final responseData = responseBody ?? [];
+        final responseMeta = responseBody ?? {};
         return {
           'data': responseData is List ? responseData : [responseData],  // Ensure data is always a List
           'meta': responseMeta,  // Meta information
