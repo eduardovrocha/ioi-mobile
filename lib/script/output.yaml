@@ -1,0 +1,285 @@
+---
+files:
+- name: balance_data.dart - 34 lines
+  notations:
+  - content: Construtor
+  - content: Método para converter JSON em um objeto Balance
+  - content: Método para converter o objeto Balance em JSON
+  functions: []
+  function_count: 0
+- name: profile_data.dart - 87 lines
+  notations:
+  - content: print(json['amount']);
+  functions: []
+  function_count: 0
+- name: api_service.dart - 452 lines
+  notations:
+  - content: "[new]"
+  - content: o corpo da requisição está em JSON
+  - content: Convert response body to a map
+  - content: Extract the 'id' from the response
+  - content: await setProfileId(balanceId);
+  - content: "[new]"
+  - content: o corpo da requisição está em JSON
+  - content: Convert response body to a map
+  - content: Extract the 'id' from the response
+  - content: await setProfileId(campaignId);
+  - content: "[new]"
+  - content: o corpo da requisição está em JSON
+  - content: Convert response body to a map
+  - content: Extract the 'id' from the response
+  - content: await setProfileId(campaignId);
+  - content: "[new]"
+  - content: o corpo da requisição está em JSON
+  - content: activation response body
+  - content: Convert response body to a map
+  - content: activation ID
+  - content: Extract the 'id' from the response
+  - content: await setProfileId(campaignId);
+  - content: "[new]"
+  - content: "[revised]"
+  - content: print('Received Note created successfully!');
+  - content: 2
+  - content: 'print(''Error creating Received Note: $e'');'
+  - content: "[revised]"
+  - content: o corpo da requisição está em JSON
+  - content: Convert response body to a map
+  - content: Extract the 'id' from the response
+  - content: "[revised]"
+  - content: "[revised]"
+  - content: print(response.body);
+  - content: "[revised]"
+  - content: print(profileId);
+  - content: print(uniqueId);
+  - content: 0
+  - content: if (responseBody != null) {
+  - content: "[revised]"
+  - content: "[revised]"
+  - content: "[new]"
+  - content: 4
+  - content: 3
+  - content: "/* Exemplo de funções que podem ser chamadas"
+  - content: Simulação de chamada à API
+  - content: manage profile presence
+  - content: manage profile presence
+  - content: manage profile presence
+  - content: manage profile presence
+  - content: 'print("presence_${presencetype}: ${profilePresence}");'
+  - content: manage profile presence
+  - content: manage profile presence
+  - content: print(prefs.getString("presence_${presenceType}")?.isNotEmpty);
+  - content: manage profile presence
+  - content: "[old stuff]"
+  functions: []
+  function_count: 3
+- name: collects_view.dart - 311 lines
+  notations:
+  - content: 7
+  - content: pre sale advertise
+  - content: section info show
+  - content: received tokens ($MC3)
+  functions: []
+  function_count: 4
+- name: coming_binds_view.dart - 173 lines
+  notations:
+  - content: Coming Bind Header
+  - content: centraliza horizontal
+  - content: 6
+  - content: ''
+  functions: []
+  function_count: 3
+- name: configurations_view.dart - 319 lines
+  notations:
+  - content: MainAxisAlignment.spaceAround
+  - content: 3
+  - content: 3
+  functions: []
+  function_count: 4
+- name: received_notes_view.dart - 424 lines
+  notations:
+  - content: print(messageAfterUpdate['available']);
+  - content: print(messageAfterUpdate['type']);
+  - content: print(messageAfterUpdate['message']);
+  - content: default value
+  - content: open QR code when click on "Vouchers"
+  - content: main content
+  - content: ''
+  - content: 7
+  - content: Open the drawer
+  - content: 13
+  - content: app main bar
+  - content: sub title space
+  - content: header
+  - content: 'color: Color(0xFFFED86A),'
+  - content: ''
+  functions: []
+  function_count: 6
+- name: transactions_view.dart - 84 lines
+  notations:
+  - content: 'endDrawer: _buildRightDrawer(context),'
+  functions: []
+  function_count: 3
+- name: campaign_item_widget.dart - 263 lines
+  notations:
+  - content: 0
+  - content: 0
+  - content: 22
+  functions: []
+  function_count: 2
+- name: campaign_list_widget.dart - 66 lines
+  notations:
+  - content: 40
+  functions: []
+  function_count: 1
+- name: collect_list_widget.dart - 562 lines
+  notations:
+  - content: funcional
+  - content: 3
+  - content: 3
+  - content: _scrollController.dispose();
+  - content: 7
+  - content: 11
+  - content: 'controller: _scrollController,'
+  - content: dynamic bottom border
+  - content: align content
+  - content: Segunda coluna com ícone e texto
+  - content: 12
+  - content: background vertical line width
+  - content: version 1.0.1
+  - content: 8
+  - content: 194
+  - content: 8
+  functions: []
+  function_count: 4
+- name: coming_bind_list_widget.dart - 255 lines
+  notations:
+  - content: funcional
+  - content: version 1.0.1
+  - content: 8
+  functions: []
+  function_count: 3
+- name: content_activation_form_widget.dart - 342 lines
+  notations:
+  - content: model data Presence
+  - content: 9
+  - content: 7
+  - content: 7
+  - content: Update the UI if this is in a StatefulWidget
+  - content: 12
+  - content: find's on presences array the element with received doc_type
+  - content: _keyController.addListener(_checkValidKey);
+  - content: profilePresences should be already in storage identifation
+  - content: 7
+  - content: _keyController.removeListener(_checkValidKey);
+  - content: height size adapted by child height size
+  - content: close activation dialog
+  - content: async call simulation
+  - content: 3
+  - content: 'validator: _validateKey,'
+  functions:
+  - name: _goToStep
+    description: verify if presences any signature type
+    signature:
+    - type: string, cnpj || cpf, passport, drive license
+    return: object
+  - name: getPresence
+    description: verify if presences has professional id
+    signature:
+    - type: string, cnpj || cpf, passport, drive license
+    return: object
+  function_count: 9
+- name: content_campaign_form_widget.dart - 859 lines
+  notations:
+  - content: 'final _allocatedController = MaskedTextController(mask: ''000.000.000,00000'');'
+  - content: _allocatedController.addListener(_formatInput);
+  - content: _allocatedController.removeListener(_formatInput);
+  - content: 0
+  - content: 0
+  - content: const SendButton()
+  - content: 0
+  - content: 0
+  - content: 3
+  - content: 0
+  - content: sendButton
+  functions: []
+  function_count: 14
+- name: content_configuration_form_widget.dart - 1358 lines
+  notations:
+  - content: 9
+  - content: Update the UI if this is in a StatefulWidget
+  - content: 6
+  - content: 6
+  - content: 6
+  - content: 6
+  - content: find's on presences array the element with received doc_type
+  - content: height size adapted by child height size
+  - content: 0
+  - content: select profile configuration doc_type
+  - content: 3
+  - content: professional profile - cnpj
+  - content: const SendButton()
+  - content: professional profile - contact name
+  - content: professional profile - whatsapp phone contact
+  - content: ''
+  functions:
+  - name: checkCNPJ
+    description: verify if presences has professional id
+    signature: []
+  - name: checkPassport
+    description: verify if presences has personal id
+    signature: []
+  - name: checkDriveLicense
+    description: verify if presences has personal id
+    signature: []
+  - name: checkCPF
+    description: verify if presences has personal id
+    signature: []
+  function_count: 22
+- name: custom_snackbar_widget.dart - 119 lines
+  notations:
+  - content: 14
+  functions: []
+  function_count: 2
+- name: modal_activation_proffesional_account_form_widget.dart - 110 lines
+  notations:
+  - content: content for App Configuration & Business Activation
+  - content: ContentConfigurationFormWidget(profilePresences)
+  functions: []
+  function_count: 1
+- name: modal_configuration_form_widget.dart - 57 lines
+  notations:
+  - content: 'child: ContentConfigurationFormWidget(profilePresences),'
+  functions: []
+  function_count: 1
+- name: received_note_list_widget.dart - 299 lines
+  notations:
+  - content: funcional
+  - content: Declare the parameter
+  - content: print(screenSize);
+  - content: final meta = snapshot.data!['meta'] as Map<String, dynamic>;
+  - content: 26
+  - content: 3
+  - content: version 1.0.1
+  - content: 8
+  functions: []
+  function_count: 3
+- name: splash_screen_widget.dart - 119 lines
+  notations:
+  - content: 9
+  functions: []
+  function_count: 3
+- name: update_profile_screen_widget.dart - 141 lines
+  notations:
+  - content: 9
+  - content: checkprofile
+  - content: 3
+  - content: image to show
+  - content: 6
+  functions: []
+  function_count: 3
+- name: welcome_widget.dart - 264 lines
+  notations:
+  - content: Generate a new UUID
+  - content: Store it locally
+  functions: []
+  function_count: 3
