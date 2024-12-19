@@ -1,18 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:accordion/accordion.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:mrcatcash/views/configurations_view.dart';
-import 'package:mrcatcash/views/received_notes_view.dart';
+import 'package:mrcatcash/widgets/components/badges_component.dart';
 
 import '../../main.dart';
 import '../../services/api_service.dart';
 import '../update_profile_screen_widget.dart';
 
 class ContentConfigurationFormWidget extends StatefulWidget {
-  final List profilePresences;
-
-  const ContentConfigurationFormWidget(this.profilePresences, {super.key});
+  const ContentConfigurationFormWidget({super.key});
 
   @override
   _ContentConfigurationFormWidgetState createState() =>
@@ -21,12 +18,11 @@ class ContentConfigurationFormWidget extends StatefulWidget {
 
 class _ContentConfigurationFormWidgetState
     extends State<ContentConfigurationFormWidget> {
-  final ApiService apiService = ApiService();
 
-  late final _contactController = TextEditingController();
+  final apiService = ApiService();
+  final _contactController = TextEditingController();
   final _cnpjController = MaskedTextController(mask: '00.000.000/0000-00');
   final _phoneController = MaskedTextController(mask: '(00) 0 0000-0000');
-  bool isButtonEnabled = false;
 
   final ValueNotifier<String> _contactName =
       ValueNotifier<String>('Nome do Contato');
@@ -36,7 +32,6 @@ class _ContentConfigurationFormWidgetState
       ValueNotifier<String>('00.000.000/0000-00');
 
   final _formKey = GlobalKey<FormState>();
-  late List profilePresences = widget.profilePresences;
 
   _validateForm(String stepName) {
     switch (stepName) {
@@ -59,12 +54,13 @@ class _ContentConfigurationFormWidgetState
           return false;
         }
       default:
-        print('Status desconhecido.');
     }
   }
 
-  String selectedOption = '';
+  String selectedOption = 'professional';
   String currentStep = 'buildFirstStep';
+
+  bool isButtonEnabled = false;
 
   bool _cnpj = false;
   bool _driveLicense = false;
@@ -74,42 +70,32 @@ class _ContentConfigurationFormWidgetState
   bool _companyIdValid = false;
   bool _contactNameValid = false;
   bool _contactNumberValid = false;
+
   bool isFieldEnabled = true;
-
-  String _presence = '';
-
   bool isFormValid = false;
 
   bool isLoading = false;
   bool isSuccess = false;
   bool isError = false;
 
-  /* Map<String, dynamic> presenceConfigData = {
-    "profile_id": 0,
-    "unique_id": "",
-    "setup": 0,
-    "doc_type": 0,
-    "doc": "",
-    "contact_name": "",
-    "phone_number": ""
-  }; */
-
   void _goToStep(String goToStep) {
     if (currentStep != null) {
       setState(() {
         currentStep = goToStep;
       });
-    }
+    };
   }
 
-  void getPresence(type) async {
-    _presence = await apiService.getPresence(type);
-    setState(() {}); /* Update the UI if this is in a StatefulWidget */
-  }
+  // precisa ser revisto
 
+  /* function definition
+  name: 'checkCNPJ'
+  description: 'verify if presences has professional id'
+  signature:
+  return: boolean
+  */
   void checkCNPJ() async {
     var getCNPJ = await apiService.profileGotPresence('cnpj');
-    print('---> getCNPJ: $getCNPJ');
 
     if (getCNPJ == null) {
       _cnpj = false;
@@ -117,42 +103,106 @@ class _ContentConfigurationFormWidgetState
       _cnpj = true;
     }
 
-    setState(() {}); // Update the UI if this is in a StatefulWidget
+    setState(() {});
   }
 
+  /* function definition
+  name: 'checkPassport'
+  description: 'verify if presences has personal id'
+  signature:
+  return: boolean
+  */
   void checkPassport() async {
     var getPassport = await apiService.profileGotPresence('passport');
     if (getPassport == null) {
       _passport = false;
-      setState(() {}); // Update the UI if this is in a StatefulWidget
+
+      setState(() {});
     }
   }
 
+  /* function definition
+  name: 'checkDriveLicense'
+  description: 'verify if presences has personal id'
+  signature:
+  return: boolean
+  */
   void checkDriveLicense() async {
     var getDriveLicense = await apiService.profileGotPresence('drive_license');
     if (getDriveLicense == null) {
       _driveLicense = false;
+
       setState(() {}); // Update the UI if this is in a StatefulWidget
     }
   }
 
+  /* function definition
+  name: 'checkCPF'
+  description: 'verify if presences has personal id'
+  signature:
+  return: boolean
+  */
   void checkCPF() async {
     var getCPF = await apiService.profileGotPresence('cpf');
     if (getCPF == null) {
       _cpf = false;
+
       setState(() {}); // Update the UI if this is in a StatefulWidget
     }
   }
 
-  _checkCnpjComplete() {
-    if (_cnpjController.value.text.length == 18) {
-      setState(() {
-        _companyIdValid = true;
-      });
-    } else {
+  // precisa ser revisto
+
+  /* function definition
+  name: 'isValidCNPJ'
+  description: 'verify consistency for "CNPJ" field'
+  signature:
+  return: boolean
+  */
+  void isValidCNPJ() {
+    var cnpj = _cnpjController.value.text;
+    cnpj = cnpj.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cnpj.length != 14) {
       setState(() {
         _companyIdValid = false;
       });
+    }
+
+    if (RegExp(r'^(\d)\1*$').hasMatch(cnpj)) {
+      setState(() {
+        _companyIdValid = false;
+      });
+    }
+
+    int calcVerifierDigit(String cnpj, int endPosition) {
+      const weights = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+      int sum = 0;
+
+      for (int i = 0; i < endPosition; i++) {
+        sum += int.parse(cnpj[i]) * weights[i + (weights.length - endPosition)];
+      }
+
+      int remainder = sum % 11;
+      return (remainder < 2) ? 0 : 11 - remainder;
+    }
+
+    int firstVerifierDigit = calcVerifierDigit(cnpj, 12);
+    int secondVerifierDigit = calcVerifierDigit(cnpj, 13);
+
+    setState(() {
+      _companyIdValid = firstVerifierDigit == int.parse(cnpj[12]) &&
+          secondVerifierDigit == int.parse(cnpj[13]);
+    });
+  }
+
+  void updateControllers() async {
+    final professionalPresence = await fetchPresence('cnpj'); // Await the Future
+    if (professionalPresence != null) {
+      _cnpjController.text = professionalPresence['doc'] ?? '';
+      _phoneController.text = professionalPresence['phone'] ?? '';
+    } else {
+      _cnpjController.text = '';
+      _phoneController.text = '';
     }
   }
 
@@ -180,15 +230,23 @@ class _ContentConfigurationFormWidgetState
     }
   }
 
+  Future<Map<String, dynamic>?> fetchPresence(String docType) async {
+    var profilePresences = await apiService.fetchPresences();
+    var presenceByDocument = extractInfo(profilePresences['data'], docType);
+
+    return presenceByDocument;
+  }
+
   Map<String, dynamic>? extractInfo(
-      List<Map<String, dynamic>> array, String docType) {
-    /* find's on presences array the element with received doc_type */
+      List<dynamic> array, String docType) {
     for (var element in array) {
-      if (element['attributes'] != null &&
+      if (element is Map<String, dynamic> &&
+          element['attributes'] is Map<String, dynamic> &&
           element['attributes']['doc_type'] == docType) {
-        return element['attributes'];
+        return element['attributes'] as Map<String, dynamic>;
       }
     }
+
     return null;
   }
 
@@ -206,7 +264,7 @@ class _ContentConfigurationFormWidgetState
   void initState() {
     super.initState();
 
-    _cnpjController.addListener(_checkCnpjComplete);
+    _cnpjController.addListener(isValidCNPJ);
     _cnpjController.addListener(() {
       _companyId.value = _cnpjController.text;
     });
@@ -223,18 +281,14 @@ class _ContentConfigurationFormWidgetState
     });
     _phoneController.addListener(_checkContactNumber);
 
-    if (profilePresences.isNotEmpty) {
-      profilePresences.map((element) {
-        var attributes = element['attributes'];
-        apiService.setProfilePresence(
-            '${attributes['contact']},${attributes['phone']},${attributes['doc']},${attributes['doc_type']},${attributes['uniqueId']},${attributes['created_at']}');
-      }).join('\n');
-    }
+    selectedOption = 'professional';
 
+    /* precisa ser revisto */
     checkCNPJ();
     checkPassport();
     checkDriveLicense();
     checkCPF();
+    /* precisa ser revisto */
   }
 
   @override
@@ -247,7 +301,7 @@ class _ContentConfigurationFormWidgetState
     _contactNumber.dispose();
     _companyId.dispose();
 
-    _cnpjController.removeListener(_checkCnpjComplete);
+    _cnpjController.removeListener(isValidCNPJ);
     _contactController.removeListener(_checkContactName);
     _phoneController.removeListener(_checkContactNumber);
 
@@ -266,11 +320,11 @@ class _ContentConfigurationFormWidgetState
               /* height size adapted by child height size */
               children: [
                 if (currentStep == 'buildFirstStep') _buildFirstStep(),
-                if (currentStep == 'buildPersonal') _buildPersonal(),
-                if (currentStep == 'buildProfessional') _buildProfessional(),
-                if (currentStep == 'buildFourthStep') _buildFourthStep(),
-                if (currentStep == 'buildFifthStep') _buildFifthStep(),
-                if (currentStep == 'buildSixthStep') _buildSixthStep(),
+                if (currentStep == 'buildPersonal') _buildPersonalContent(),
+                if (currentStep == 'buildProfessional') _buildProfessionalContent(),
+                if (currentStep == 'buildFourthStep') _professionalProfileCompanyDoc(),
+                if (currentStep == 'buildFifthStep') _professionalProfileContact(),
+                if (currentStep == 'buildSixthStep') _professionalContactPhone(),
               ],
             ),
           ),
@@ -280,7 +334,7 @@ class _ContentConfigurationFormWidgetState
             child: IconButton(
               icon: Icon(Icons.close, color: Colors.grey[700]),
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o modal ou formulário
+                Navigator.of(context).pop();
               },
             ),
           ),
@@ -289,7 +343,7 @@ class _ContentConfigurationFormWidgetState
     );
   }
 
-  Widget _buildProfessional() {
+  Widget _buildProfessionalContent() {
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,9 +438,8 @@ class _ContentConfigurationFormWidgetState
                   child: const Icon(Icons.arrow_back),
                 ),
               ),
-              // /* const SendButton() */
               ElevatedButton(
-                onPressed: true
+                onPressed: false
                     ? () {
                         _goToStep('buildFourthStep');
                       }
@@ -404,7 +457,7 @@ class _ContentConfigurationFormWidgetState
         ]);
   }
 
-  Widget _buildPersonal() {
+  Widget _buildPersonalContent() {
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +514,6 @@ class _ContentConfigurationFormWidgetState
             ),
           ),
           const SizedBox(height: 16),
-          /**/
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -478,7 +530,6 @@ class _ContentConfigurationFormWidgetState
                   child: const Icon(Icons.arrow_back),
                 ),
               ),
-              /* const SendButton() */
               ElevatedButton(
                 onPressed: true
                     ? () {
@@ -498,65 +549,30 @@ class _ContentConfigurationFormWidgetState
         ]);
   }
 
-  /* select profile configuration doc_type */
   Widget _buildFirstStep() {
-    print('\n\n----> $profilePresences \n\n');
-
     bool isDisabled = true;
-
-    String contactName = _presence.isEmpty ? '' : _presence.split(',')[0];
-    String phoneNumber = _presence.isEmpty ? '' : _presence.split(',')[1];
-    String doc = _presence.isEmpty ? '' : _presence.split(',')[2];
+    bool isProfessionalActivated = false;
 
     String formatCNPJ(String cnpj) {
       final controllerText = MaskedTextController(mask: '00.000.000/0000-00');
       controllerText.text = cnpj;
+
       return controllerText.text;
     }
-
     String formatPhone(String phone) {
       final controllerText = MaskedTextController(mask: '(00) 0 0000-0000');
       controllerText.text = phone;
+
       return controllerText.text;
     }
 
-    if (_presence.isNotEmpty) {
-      print(
-          '-> cpf: ${_cpf}, -> cnpj: ${_cnpj}, -> habilitaça: ${_driveLicense}, -> passaporte: ${_passport}, ');
-      print(
-          '-> nome: ${_presence.split(',')[0]}, -> phone: ${_presence.split(',')[1]}, doc: ${_presence.split(',')[2]}');
+    final professionalPresence = fetchPresence('cnpj');
+    if (professionalPresence != null) {
+      isProfessionalActivated = true;
     }
 
-    Map<String, dynamic>? extractInfo(List profilePresences, String docType) {
-      for (var element in profilePresences) {
-        if (element['attributes'] != null &&
-            element['attributes']['doc_type'] == docType) {
-          return element['attributes'] as Map<String, dynamic>;
-        }
-      }
-      return null;
-    }
-
-    var info = extractInfo(profilePresences, 'cnpj');
-
-    if (info?['doc'] != null) {
-      _cnpjController.text = info!['doc']!;
-    }
-    if (info?['phone'] != null) {
-      _phoneController.text = info!['phone']!;
-    }
-
-    final String formatedCNPJ = info?['doc'] != null ? formatCNPJ(info?['doc']) : 'CNPJ não disponível';
-    final String formatedPhone = info?['phone'] != null ? formatPhone(info?['phone']) : 'não possui telefone';
-
-
-
-    print('info -->');
-    print(formatedCNPJ);
-    print('info -->');
-
-
-
+    /* final String formatedCNPJ = info?['doc'] != null ? formatCNPJ(info?['doc']) : 'CNPJ não disponível';
+    final String formatedPhone = info?['phone'] != null ? formatPhone(info?['phone']) : 'não possui telefone'; */
 
     /* var info = extractInfo(profilePresences, 'cnpj');
     _cnpjController.text = info!.isNotEmpty ? info['doc'] : "";
@@ -566,65 +582,191 @@ class _ContentConfigurationFormWidgetState
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          textAlign: TextAlign.left,
-          text: const TextSpan(
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black38,
-              height: 1.7,
-            ),
-            children: <TextSpan>[
-              TextSpan(
-                text: 'Configurar meu aplicativo ',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.black87,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: RichText(
+                textAlign: TextAlign.left,
+                text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black38,
+                    height: 1.7,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Configurar meu aplicativo ',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+          ],
         ),
         const SizedBox(height: 16),
         Accordion(
           maxOpenSections: 1,
-          headerBackgroundColor: Color(0xFFFAFAFA),
+          headerBackgroundColor: const Color(0xFFFAFAFA),
           contentBackgroundColor: Colors.white70,
           contentBorderColor: Colors.white70,
           contentBorderWidth: 0,
           contentBorderRadius: 0,
           contentHorizontalPadding: 0,
           contentVerticalPadding: 0,
-          paddingListHorizontal: 10,
+          paddingListHorizontal: 0,
           paddingListTop: 10,
           paddingListBottom: 10,
           headerBorderColorOpened: Colors.white70,
           scaleWhenAnimating: false,
           children: [
             AccordionSection(
-              isOpen: false,
-              header: Container(
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
+              isOpen: true,
+              header: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
                           child: RichText(
-                            textAlign: TextAlign.left,
-                            text: const TextSpan(
-                              text: "Modo Pessoal",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
+                              text: const TextSpan(
+                        text: 'Modo Comercial',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ))),
+                      const BadgesComponent(status: 'new'),
+                    ],
+                  )),
+              content: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: isProfessionalActivated
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset(
+                            'assets/images/resources-022.png',
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    height: 1.7),
+                                children: [
+                                  TextSpan(
+                                    // ${info?['contact']}\n
+                                    text: '',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                      // text: '$formatedPhone\n',
+                                      ),
+                                  TextSpan(
+                                      // text: '$formatedCNPJ\n',
+                                      ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )),
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green,
+                              ),
+                              padding: const EdgeInsets.all(5.0),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          RichText(
+                              textAlign: TextAlign.left,
+                              text: const TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black38,
+                                  height: 1.7,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: "   Atraia e fidelize clientes "
+                                        "distribuindo pontos de premiação. Além dos "
+                                        "benefícios de cashback oferecidos pelo "
+                                        "app, o empreendedor cria campanhas "
+                                        "personalizadas, incentivando o consumo "
+                                        "com recompensas exclusivas.",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          RadioListTile<String>(
+                            title: const Text(
+                              'Modo Comercial',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            value: 'professional',
+                            groupValue: selectedOption,
+                            onChanged: isProfessionalActivated
+                                ? null
+                                : (String? value) {
+                                    setState(() {
+                                      selectedOption = value ?? '';
+                                    });
+                                  },
+                          )
+                        ],
+                      ),
               ),
+            ),
+            AccordionSection(
+              isOpen: false,
+              header: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: RichText(
+                              text: const TextSpan(
+                        text: 'Modo Pessoal',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      ))),
+                      const BadgesComponent(status: 'inactive'),
+                    ],
+                  )),
               content: Container(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -679,141 +821,18 @@ class _ContentConfigurationFormWidgetState
                 ),
               ),
             ),
-            AccordionSection(
-              isOpen: true,
-              header: Container(
-                child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: RichText(
-                            textAlign: TextAlign.left,
-                            text: const TextSpan(
-                              text: "Modo Business",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-              content: Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: _cnpj
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              'assets/images/resources-022.png',
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      height: 1.7),
-                                  children: [
-                                    TextSpan(
-                                      text: '${info?['contact']}\n',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    TextSpan(
-                                      text: '${formatedPhone}\n',
-                                    ),
-                                    TextSpan(
-                                      text: '${formatedCNPJ}\n',
-                                        // _cnpjController.text
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 8,
-                              right: 8,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors
-                                      .green, // Cor do status (pode ser alterada conforme o status)
-                                ),
-                                padding: const EdgeInsets.all(5.0),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            RichText(
-                                textAlign: TextAlign.left,
-                                text: const TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black38,
-                                    height: 1.7,
-                                  ),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: "   Atraia e fidelize clientes "
-                                          "distribuindo pontos de premiação. Além dos "
-                                          "benefícios de cashback oferecidos pelo "
-                                          "app, o empreendedor cria campanhas "
-                                          "personalizadas, incentivando o consumo "
-                                          "com recompensas exclusivas.",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            RadioListTile<String>(
-                              title: const Text('Modo Business',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              value: 'professional',
-                              groupValue: selectedOption,
-                              onChanged: (String? value) {
-                                setState(() {
-                                  selectedOption = value ?? '';
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                ),
-              ),
-            ),
           ],
         ),
         Align(
           alignment: Alignment.centerRight,
           child: ElevatedButton(
-            onPressed: _validateForm('selectOption')
-                ? () {
-                    _goToStep('buildProfessional');
-                  }
-                : null,
+            onPressed: isProfessionalActivated
+                ? null
+                : _validateForm('selectOption')
+                    ? () {
+                        _goToStep('buildProfessional');
+                      }
+                    : null,
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: Colors.blue,
@@ -826,9 +845,8 @@ class _ContentConfigurationFormWidgetState
       ],
     );
   }
-
-  /* professional profile - cnpj */
-  Widget _buildFourthStep() {
+  
+  Widget _professionalProfileCompanyDoc() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,8 +950,6 @@ class _ContentConfigurationFormWidgetState
             );
           },
         ),
-
-        /**/
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -974,9 +990,8 @@ class _ContentConfigurationFormWidgetState
       ],
     );
   }
-
-  /* professional profile - contact name */
-  Widget _buildFifthStep() {
+  
+  Widget _professionalProfileContact() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1080,8 +1095,6 @@ class _ContentConfigurationFormWidgetState
             );
           },
         ),
-
-        /**/
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1118,30 +1131,32 @@ class _ContentConfigurationFormWidgetState
             )
           ],
         ),
-        /**/
       ],
     );
   }
-
-  /* professional profile - whatsapp phone contact */
-  Widget _buildSixthStep() {
+  
+  Widget _professionalContactPhone() {
     Future<void> delayedExecution(Function action) async {
       await Future.delayed(const Duration(seconds: 3));
-      action();
+      /* action(); */
     }
 
+    cleanPhone(String phoneNumber) {
+      return _phoneController.value.text
+          .replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    }
+
+    ;
+
+    cleanCnpj(String cnpj) {
+      return _cnpjController.text.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+    }
+
+    ;
+
     Future<void> handleSubmit() async {
-      print('\n---> on handleSubmit\n');
-
-      var profileId = await apiService.getProfileId();
-      var uniqueId = await apiService.getUniqueId();
-
       setState(() {
         isLoading = true;
-      });
-
-      delayedExecution(() {
-        Navigator.of(context).pop(); // Fecha o modal ou formulário
       });
 
       setState(() {
@@ -1161,25 +1176,22 @@ class _ContentConfigurationFormWidgetState
 
       final Map<String, String> data = {
         'contact_name': capitalizeEachWord(_contactController.value.text),
-        'phone_number':
-            _phoneController.value.text.replaceAll(RegExp(r'[^a-zA-Z0-9]'), ''),
-        'doc': _cnpjController.text.replaceAll(RegExp(r'[^a-zA-Z0-9]'), ''),
+        'phone_number': cleanPhone(_cnpjController.text),
+        'doc': cleanCnpj(_cnpjController.text),
         'doc_type': '3',
         'setup': '1',
-        'unique_id': uniqueId,
-        'profile_id': profileId,
       };
-      /*  */
 
       apiService.createPresence(data).then((result) {
-        print(result);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => const UpdateProfileScreenWidget(message: {
+                    "type": "success",
+                    "message": "perfil atualizado com sucesso"
+                  })),
+          result: (Route<dynamic> route) => route.isFirst,
+        );
       });
-
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (context) => const UpdateProfileScreenWidget()),
-        result: (Route<dynamic> route) => route.isFirst,
-      );
     }
 
     return Column(
@@ -1285,8 +1297,6 @@ class _ContentConfigurationFormWidgetState
             );
           },
         ),
-
-        /**/
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -1347,4 +1357,5 @@ class _ContentConfigurationFormWidgetState
       ],
     );
   }
+
 }
