@@ -8,17 +8,36 @@ class ApiService {
 
   final String baseUrl = 'http://192.168.12.184:3020';
 
-  /* [new] */
+  /* [new][not-tested] */
   Future<String> createBalance(Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/balances');
-    final body = jsonEncode({"balance": data });
-    final response = await http.post(
-      url, headers: {
-      'Content-Type': 'application/json',  /* o corpo da requisição está em JSON */
-    }, body: body,
-    );
+    try {
+      String? profileId = await getProfileId();
+      final body = jsonEncode({
+        "balance": data
+      });
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '', // Use empty string if profileId is null
+      };
+      final response = await http.post(Uri.parse('$baseUrl/balances'),
+          headers: headers, body: body);
 
-    var jsonResponse = json.decode(response.body); /* Convert response body to a map */
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final responseData = responseBody['balances']['data'] ?? [];
+        final responseMeta = responseBody['balances']['meta'] ?? {};
+
+
+        return responseData[0]['id'];
+      } else {
+        /* throw Exception('Failed to load received notes'); */
+        return 'null';
+      }
+    } catch (e) {
+      throw Exception('Error fetching presences: $e');
+    }
+
+    /* var jsonResponse = json.decode(response.body); /* Convert response body to a map */
     print(jsonResponse);
 
     var balanceId = jsonResponse['id']; /* Extract the 'id' from the response */
@@ -30,64 +49,105 @@ class ApiService {
     } else {
 
       return 'null';
-    }
+    } */
   }
 
-  /* [new] */
+  /* [new][not-tested] */
   Future<String> createCampaign(Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/campaigns');
-    final body = jsonEncode({"campaign": data });
-    final response = await http.post(
-      url, headers: {
-      'Content-Type': 'application/json',  /* o corpo da requisição está em JSON */
-    }, body: body,
-    );
+    try {
+      String? profileId = await getProfileId();
+      final body = jsonEncode({
+        "campaign": data
+      });
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '', // Use empty string if profileId is null
+      };
+      final response = await http.post(Uri.parse('$baseUrl/campaigns'),
+          headers: headers, body: body);
 
-    var jsonResponse = json.decode(response.body); /* Convert response body to a map */
-    print(jsonResponse);
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final responseData = responseBody['campaigns']['data'] ?? [];
+        final responseMeta = responseBody['campaigns']['meta'] ?? {};
 
-    var campaignId = jsonResponse['id']; /* Extract the 'id' from the response */
-
-    if (campaignId != null) {
-      /* await setProfileId(campaignId); */
-
-      return campaignId;
-    } else {
-
-      return 'null';
+        return responseData[0]['id'];
+      } else {
+        /* throw Exception('Failed to load received notes'); */
+        return 'null';
+      }
+    } catch (e) {
+      throw Exception('Error fetching presences: $e');
     }
   }
 
-  /* [new] */
+  /* [new][not-tested] */
   Future<String> createPresence(Map<String, dynamic> data) async {
-    final url = Uri.parse('$baseUrl/presences');
-    final body = jsonEncode({"presence": data });
-    final response = await http.post(
-      url, headers: {
-      'Content-Type': 'application/json',  /* o corpo da requisição está em JSON */
-    }, body: body,
-    );
+    try {
+      String? profileId = await getProfileId();
+      final body = jsonEncode({
+        "presence": data
+      });
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '', // Use empty string if profileId is null
+      };
+      final response = await http.post(Uri.parse('$baseUrl/presences'),
+          headers: headers, body: body);
 
-    var jsonResponse = json.decode(response.body); /* Convert response body to a map */
-    var presenceId = jsonResponse['id']; /* Extract the 'id' from the response */
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        
 
-    if (presenceId != null) {
-      /* await setProfileId(campaignId); */
+        final responseData = responseBody['presences']['data'] ?? [];
+        final responseMeta = responseBody['presences']['meta'] ?? {};
 
-      return presenceId;
-    } else {
-
-      return 'null';
+        return responseData[0]['id'];
+      } else {
+        /* throw Exception('Failed to load received notes'); */
+        return 'null';
+      }
+    } catch (e) {
+      throw Exception('Error fetching presences: $e');
     }
   }
 
-  /* [new] */
+  /* [new][not-tested] */
+  Future<String> updateActivation(Map<String, dynamic> data) async {
+    try {
+      String? profileId = await getProfileId();
+      final body = jsonEncode({
+        "activation": data
+      });
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '', // Use empty string if profileId is null
+      };
+      final response = await http.post(Uri.parse
+        ('$baseUrl/activations/set_active'),
+          headers: headers, body: body);
+
+      final activation = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+
+        return "success";
+      } else {
+
+        return "error";
+      }
+    } catch (e) {
+      throw Exception('Error fetching presences: $e');
+    }
+  }
+
+  /* [new][not-tested] */
   Future<Map<String, dynamic>> fetchPresences() async {
     try {
       String? profileId = await getProfileId();
       final headers = {
         'Content-Type': 'application/json',
-        'profileId': profileId ?? '',  // Use empty string if profileId is null
+        'profileId': profileId ?? '',
       };
       final response = await http.get(
         Uri.parse('$baseUrl/presences'),
@@ -97,6 +157,35 @@ class ApiService {
         final responseBody = json.decode(response.body);
         final responseData = responseBody['presences']['data'] ?? [];
         final responseMeta = responseBody['presences']['meta'] ?? {};
+
+        return {
+          'data': responseData is List ? responseData : [responseData],
+          'meta': responseMeta,
+        };
+      } else {
+        throw Exception('Failed to load presences');
+      }
+    } catch (e) {
+      throw Exception('Error fetching presences: $e');
+    }
+  }
+
+  /* [new][not-tested] */
+  Future<Map<String, dynamic>> fetchBalances() async {
+    try {
+      String? profileId = await getProfileId();
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '',  // Use empty string if profileId is null
+      };
+      final response = await http.get(
+        Uri.parse('$baseUrl/balances'),
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final responseData = responseBody['balances']['data'] ?? [];
+        final responseMeta = responseBody['balances']['meta'] ?? {};
 
         return {
           'data': responseData is List ? responseData : [responseData],  // Ensure data is always a List
@@ -110,7 +199,7 @@ class ApiService {
     }
   }
 
-  /* [revised] */
+  /* [revised][tested] */
   Future<void> createReceivedNote(Map<String, dynamic> data) async {
     final url = Uri.parse('$baseUrl/received_notes');
     final headers = {
@@ -122,13 +211,13 @@ class ApiService {
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 201) {
-        /* print('Received Note created successfully!'); */
+        /*  */
       } else {
-        /* print('Failed to create Received Note. Status Code: ${response.statusCode}');
-        /* print('Response: ${response.body}'); */ */
+        /* 
+        /*  */ */
       }
     } catch (e) {
-      /* print('Error creating Received Note: $e'); */
+      /*  */
     }
   }
 
@@ -218,9 +307,6 @@ class ApiService {
     String? profileId = await getProfileId();
     String? uniqueId = await getUniqueId();
 
-    /* print(profileId); */
-    /* print(uniqueId); */
-
     final headers = {
       'Content-Type': 'application/json',
       'profileId': profileId ?? '',  // Use empty string if profileId is null
@@ -234,9 +320,20 @@ class ApiService {
     final responseBody = json.decode(response.body);
     final responseStatus = json.decode(response.statusCode.toString()); /**/
 
-    /* if (responseBody != null) { */
+    print("---> on lib/services/api_service");
+    print(responseBody['profile']['data']['attributes']);
+    print(responseStatus);
+    print('--->');
+
     if (responseStatus == 200) {
-      var attributesToMap = responseBody['profile']['data']['attributes'];  // Access the first
+      final attributesToMap = responseBody['profile']['data']['attributes'];
+
+      final personalActivation = attributesToMap['presences']['personal']['activation'];
+      final professionalActivation = attributesToMap['presences']['professional']['activation'];
+
+      print("personal activation: $personalActivation");
+      print("professional activation: $professionalActivation");
+      print("--->");
 
       return ProfileData.fromJson(attributesToMap);
     } else {
@@ -273,26 +370,68 @@ class ApiService {
     }
   }
 
-  /* [revised] */
-  Future<Map<String, dynamic>> fetchShards() async {
+  /* [refact.] */
+  /* [background jobs selection ] */
+  Future<String> fetchJobsExecution(String jobName) async {
     try {
       String? profileId = await getProfileId();
       final headers = {
         'Content-Type': 'application/json',
         'profileId': profileId ?? '',  // Use empty string if profileId is null
+        'jobName': jobName
       };
       final response = await http.get(
         Uri.parse('$baseUrl/last_job_execution.json'),
         headers: headers,
       );
+
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
+        String nexExecutionSchedule = responseBody['next_execution_in'];
 
+        return nexExecutionSchedule;
+      } else {
+        throw Exception('Unexpected response format');
+      }
+    } catch(e) {
+      throw Exception('Error fetching collects: $e');
+    }
+  }
+  /* [background jobs selection ] */
+  fetchJobExecutions(String jobName) async {
+    String jobNameExecution = await fetchJobsExecution(jobName);
+
+    return jobNameExecution;
+  }
+  /* [refact.] */
+
+  /* [revised] */
+  Future<Map<String, dynamic>> fetchShards(String jobName) async {
+    try {
+      String? profileId = await getProfileId();
+      final headers = {
+        'Content-Type': 'application/json',
+        'profileId': profileId ?? '',  // Use empty string if profileId is null
+        'jobName': jobName
+      };
+      final response = await http.get(
+        Uri.parse('$baseUrl/last_job_execution.json'),
+        headers: headers,
+      );
+
+      print('\n\nresponse code: ${response.statusCode}');
+      print('response body: ${response.body}\n\n');
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
         final responseData = responseBody ?? [];
-        final responseMeta = responseBody ?? {};
+
+        /*
+          final responseMeta = responseBody ?? {};
+        */
         return {
-          'data': responseData is List ? responseData : [responseData],  // Ensure data is always a List
-          'meta': responseMeta,  // Meta information
+          'data': responseData is List ? responseData : [responseData],
+          /* 'meta': responseMeta */
         };
       } else {
         throw Exception('Unexpected response format');
@@ -358,7 +497,7 @@ class ApiService {
     String presencetype = '';
     if (elements.length > 3) {
       presencetype = elements[3].trim().toLowerCase();
-      /*print("presence_${presencetype}: ${profilePresence}");*/
+      /**/
       prefs.setString("presence_${presencetype}", profilePresence);
     }
   }
@@ -385,7 +524,7 @@ class ApiService {
     prefs.clear();
   }
 
-  /* [old stuff]*/
+  /* [old stuff]
   Future<List<dynamic>> fetchRealizedBinds() async {
     final response = await http.get(Uri.parse('$baseUrl/realized_binds'));
     if (response.statusCode == 200) {
@@ -400,7 +539,6 @@ class ApiService {
         throw Exception('Unexpected response format');
       }
     } else {
-      // If the server does not return a 200 OK response, throw an error
       throw Exception('Failed to load received notes');
     }
   }
@@ -418,9 +556,9 @@ class ApiService {
         throw Exception('Unexpected response format');
       }
     } else {
-      // If the server does not return a 200 OK response, throw an error
       throw Exception('Failed to load received notes');
     }
   }
+  * */
 
 }

@@ -1,38 +1,56 @@
 require 'fileutils'
 
-# Function to recursively find all files in the directory and its subdirectories
-def find_all_files(dir)
-  Dir.glob(File.join(dir, '**', '*')).select { |file| File.file?(file) }
+# Exibe o path atual em que o script está sendo executado
+current_path = Dir.pwd
+puts "O script está sendo executado em: #{current_path}"
+
+# Pergunta ao usuário qual path deseja verificar
+puts "Informe o path que deseja verificar e remover os 'print(\"\")' dos arquivos .dart:"
+folder_path = gets.chomp
+
+# Verifica se o path informado é válido
+unless Dir.exist?(folder_path)
+  puts "O path informado não existe. Encerrando o script."
+  exit
 end
 
+# Função para encontrar todos os arquivos .dart na pasta e subpastas
+def find_all_dart_files(dir)
+  Dir.glob(File.join(dir, '**', '*.dart')).select { |file| File.file?(file) }
+end
 
+# Função para remover `print` statements de um arquivo .dart
 def remove_print_statements(file_path)
-  # Read the file content
+  # Lê o conteúdo do arquivo
   content = File.read(file_path)
 
-
+  # Remove todos os `print("")` e `print('')` statements
   updated_content = content.gsub(/print\(['"].*?['"]\);?/, '')
 
-  # Write the updated content back to the file if changes were made
+  # Escreve o conteúdo atualizado de volta ao arquivo se houver mudanças
   if content != updated_content
     File.write(file_path, updated_content)
-    puts "Updated: #{file_path}"
-  else
-    puts "No changes: #{file_path}"
+    puts "Atualizado: #{file_path}"
   end
 end
 
-# Main function to process all files in the specified folder and subfolders
+# Função principal para processar todos os arquivos .dart no path especificado
 def process_folder(folder_path)
-  files = find_all_files(folder_path)
+  files = find_all_dart_files(folder_path)
 
+  # Verifica se há arquivos .dart para processar
+  if files.empty?
+    puts "Nenhum arquivo .dart encontrado no path informado."
+    return
+  end
+
+  # Processa cada arquivo .dart encontrado
   files.each do |file|
     remove_print_statements(file)
   end
+
+  puts "Processamento concluído."
 end
 
-# Automatically set folder_path to the current working directory
-folder_path = Dir.pwd
-
-# Call the function to start processing
+# Inicia o processamento dos arquivos no path especificado
 process_folder(folder_path)

@@ -65,32 +65,58 @@ flutter_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/fluff-you.png
-    - assets/images/icone-transparent.png
+    - assets/images/background-cat-ii.gif
     - assets/images/mr-cat-cash.png
-    - assets/images/menu-left.png
-    - assets/images/menu-right.png
     - assets/images/menu-qrcode.png
     - assets/images/menu-close.png
-    - assets/images/resources-003.png
+    - assets/images/menu-settings.png
+    - assets/images/paw-mark.png
+
     - assets/images/resources-004.png
     - assets/images/resources-004-small.png
-    - assets/images/resources-006.png
-    - assets/images/resources-007.png
-    - assets/images/resources-008.png
-    - assets/images/resources-010.png
+
     - assets/images/resources-012.png
     - assets/images/resources-013.png
-    - assets/images/resources-014.png
-    - assets/images/resources-015.png
-    - assets/images/resources-016.png
-    - assets/images/resources-017.png
+
     - assets/images/resources-018.png
-    - assets/images/resources-020.png
-    - assets/images/resources-019.png
+
     - assets/images/resources-021.png
     - assets/images/resources-022.png
     - assets/images/resources-023.png
+    - assets/images/resources-024.png
+
+    - assets/images/resources-026.png
+    - assets/images/resources-027.png
+    - assets/images/resources-028.png
+    - assets/images/resources-029.png
+    - assets/images/resources-030.png
+
+    - assets/images/resources-037.png
+
+    - assets/images/resources-039.png
+    - assets/images/resources-040.png
+    - assets/images/resources-041.png
+    - assets/images/resources-042.png
+    - assets/images/resources-043.png
+
+    - assets/images/1091102.png
+    - assets/images/4686902.png
+    - assets/images/4691500.png
+    - assets/images/4711301.png
+    - assets/images/4711302.png
+    - assets/images/4712100.png
+    - assets/images/4713004.png
+    - assets/images/4721102.png
+    - assets/images/4724500.png
+    - assets/images/4729699.png
+    - assets/images/4731800.png
+    - assets/images/4755501.png
+    - assets/images/4761003.png
+    - assets/images/4771701.png
+    - assets/images/4773300.png
+    - assets/images/4774100.png
+    - assets/images/5611201.png
+    - assets/images/5611203.png
 
   fonts:
     - family: Anton

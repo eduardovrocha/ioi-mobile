@@ -16,7 +16,7 @@ class WhatsAppGroupLinkWidget {
     return RichText(
       text: TextSpan(
         text: linkText,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.blue,
           decoration: TextDecoration.underline,
         ),

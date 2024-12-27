@@ -27,6 +27,7 @@ class CampaignItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Card(
       color: Colors.white,
       elevation: 0,
@@ -42,7 +43,7 @@ class CampaignItemWidget extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFED86A), // Define o fundo amarelo
+                color: Color(0xFFFBF8BA), // Define o fundo amarelo
                 borderRadius: BorderRadius.circular(6), // Define o raio dos
 
                 // cantos arredondados
@@ -69,11 +70,10 @@ class CampaignItemWidget extends StatelessWidget {
             ),
             /**/
 
-            const Divider(thickness: 1.2, height: 20),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFFED86A), // Define o fundo amarelo
+                color: Color(0xFFFBF8BA), // Define o fundo amarelo
                 borderRadius: BorderRadius.circular(6), // Define o raio dos
 
                 // cantos arredondados
@@ -141,13 +141,12 @@ class CampaignItemWidget extends StatelessWidget {
                       ))
                   .toList(),
             ),
-            const Divider(thickness: 1.2, height: 10),
             /**/
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFFFED86A), // Define o fundo amarelo
+                  color: Color(0xFFFBF8BA), // Define o fundo amarelo
                   borderRadius: BorderRadius.circular(6), // Define o raio dos
 
                   // cantos arredondados
@@ -167,14 +166,14 @@ class CampaignItemWidget extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: Colors.white, // Define o fundo amarelo
-                borderRadius: BorderRadius.circular(
-                    6), // Define o raio dos cantos arredondados
+                borderRadius: BorderRadius.circular(6),
               ),
               child: const Padding(
                 padding:
                     EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Distribui o espaço igualmente entre os itens
+                  /* Distribui o espaço igualmente entre os itens */
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
@@ -186,10 +185,10 @@ class CampaignItemWidget extends StatelessWidget {
                             size: 32,
                             color: Colors.black45,
                           ),
-                          const SizedBox(height: 5), // Espaço entre o ícone e o texto
+                          const SizedBox(height: 5),
                           Text(
                             'Status',
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 15),
                           ),
                         ],
                       ),
@@ -203,10 +202,10 @@ class CampaignItemWidget extends StatelessWidget {
                             size: 32,
                             color: Colors.black45,
                           ),
-                          const SizedBox(height: 5), // Espaço entre o ícone e o texto
+                          const SizedBox(height: 5),
                           Text(
                             '5d 8h:45m:27s',
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 15),
                           ),
                         ],
                       ),
@@ -223,7 +222,7 @@ class CampaignItemWidget extends StatelessWidget {
                           const SizedBox(height: 5), // Espaço entre o ícone e o texto
                           Text(
                             '27 perfis',
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 15),
                           ),
                         ],
                       ),
@@ -246,7 +245,7 @@ class CampaignItemWidget extends StatelessWidget {
                       child: Text(
                         summary,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.normal, fontSize: 14
+                            fontWeight: FontWeight.normal, fontSize: 15
                         ),
                       ),
                     ),

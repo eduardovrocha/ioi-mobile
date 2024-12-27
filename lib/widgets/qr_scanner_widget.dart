@@ -73,7 +73,10 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
         });
 
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            ReceivedNotesView(profileData: profile)), (Route<dynamic> route) => route.isFirst,
+            ReceivedNotesView(profileData: profile, message: const {
+              "type": "success", "message": "qr code escaneado com sucesso"
+            })), (Route<dynamic> route)
+        => route.isFirst,
         );
       }
     });

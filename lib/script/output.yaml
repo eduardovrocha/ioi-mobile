@@ -7,37 +7,88 @@ files:
   - content: Método para converter o objeto Balance em JSON
   functions: []
   function_count: 0
-- name: profile_data.dart - 87 lines
+- name: exemple_data.dart - 185 lines
   notations:
-  - content: print(json['amount']);
-  functions: []
-  function_count: 0
-- name: api_service.dart - 452 lines
+  - content: 7
+  - content: 6
+  - content: 7
+  functions:
+  - name: ProfileData.fromJson
+    description: Factory method to parse JSON data into a ProfileData object. Validates
+      the presence of required fields and initializes nested objects.
+    signature:
+    - type: Map<String, dynamic> json
+    return: ProfileData
+  - name: printProfileData
+    description: Method to print the accessible content of the ProfileData instance,
+      including its nested objects.
+    signature: []
+  - name: Presences.fromJson
+    description: Factory method to parse JSON data into a Presences object with nested
+      PresenceStatus for professional and personal fields.
+    signature:
+    - type: Map<String, dynamic> json
+    return: Presences
+  function_count: 5
+- name: profile_data.dart - 234 lines
   notations:
-  - content: "[new]"
-  - content: o corpo da requisição está em JSON
-  - content: Convert response body to a map
+  - content: 7
+  - content: 6
+  - content: 7
+  - content: 6
+  - content: 7
+  - content: 7
+  functions:
+  - name: ProfileData.fromJson
+    description: Factory method to parse JSON data into a ProfileData object. Validates
+      the presence of required fields and initializes nested objects.
+    signature:
+    - type: Map<String, dynamic> json
+    return: ProfileData
+  - name: printProfileData
+    description: print the accessible content of the ProfileData instance
+    signature: []
+  - name: Vouchers.fromJson
+    description: Factory method to parse JSON data into a Vouchers object. Converts
+      each numeric field from JSON with validation to ensure valid integers.
+    signature:
+    - type: Map<String, dynamic> json
+    return: Vouchers
+  - name: printPresences
+    description: Prints the details of professional and personal presences, including
+      doc, doc_type, and activation details.
+    signature: []
+    return: void
+  - name: Tokens.fromJson
+    description: Factory method to parse JSON data into a Tokens object. Converts
+      amount to a string and collected to a double, ensuring default values if fields
+      are missing or invalid.
+    signature:
+    - type: Map<String, dynamic> json
+    return: Tokens
+  - name: Currency.fromJson
+    description: Factory method to parse JSON data into a Currency object. Ensures
+      amount is a string with a default value if data is missing or invalid.
+    signature:
+    - type: Map<String, dynamic> json
+    return: Currency
+  function_count: 5
+- name: api_service.dart - 515 lines
+  notations:
+  - content: "[new][not-tested]"
+  - content: throw Exception('Failed to load received notes');
+  - content: var jsonResponse = json.decode(response.body); /* Convert response body
+      to a map
   - content: Extract the 'id' from the response
   - content: await setProfileId(balanceId);
-  - content: "[new]"
-  - content: o corpo da requisição está em JSON
-  - content: Convert response body to a map
-  - content: Extract the 'id' from the response
-  - content: await setProfileId(campaignId);
-  - content: "[new]"
-  - content: o corpo da requisição está em JSON
-  - content: Convert response body to a map
-  - content: Extract the 'id' from the response
-  - content: await setProfileId(campaignId);
-  - content: "[new]"
-  - content: o corpo da requisição está em JSON
-  - content: activation response body
-  - content: Convert response body to a map
-  - content: activation ID
-  - content: Extract the 'id' from the response
-  - content: await setProfileId(campaignId);
-  - content: "[new]"
-  - content: "[revised]"
+  - content: "[new][not-tested]"
+  - content: throw Exception('Failed to load received notes');
+  - content: "[new][not-tested]"
+  - content: throw Exception('Failed to load received notes');
+  - content: "[new][not-tested]"
+  - content: "[new][not-tested]"
+  - content: "[new][not-tested]"
+  - content: "[revised][tested]"
   - content: print('Received Note created successfully!');
   - content: 2
   - content: 'print(''Error creating Received Note: $e'');'
@@ -69,7 +120,7 @@ files:
   - content: manage profile presence
   - content: print(prefs.getString("presence_${presenceType}")?.isNotEmpty);
   - content: manage profile presence
-  - content: "[old stuff]"
+  - content: 36
   functions: []
   function_count: 3
 - name: collects_view.dart - 311 lines
@@ -80,7 +131,7 @@ files:
   - content: received tokens ($MC3)
   functions: []
   function_count: 4
-- name: coming_binds_view.dart - 173 lines
+- name: coming_binds_view.dart - 177 lines
   notations:
   - content: Coming Bind Header
   - content: centraliza horizontal
@@ -88,25 +139,24 @@ files:
   - content: ''
   functions: []
   function_count: 3
-- name: configurations_view.dart - 319 lines
+- name: professional_account_view.dart - 327 lines
   notations:
+  - content: 6
   - content: MainAxisAlignment.spaceAround
   - content: 3
   - content: 3
   functions: []
-  function_count: 4
-- name: received_notes_view.dart - 424 lines
+  function_count: 3
+- name: received_notes_view.dart - 442 lines
   notations:
-  - content: print(messageAfterUpdate['available']);
-  - content: print(messageAfterUpdate['type']);
-  - content: print(messageAfterUpdate['message']);
+  - content: 3
+  - content: 2
+  - content: 3
   - content: default value
   - content: open QR code when click on "Vouchers"
   - content: main content
-  - content: ''
   - content: 7
   - content: Open the drawer
-  - content: 13
   - content: app main bar
   - content: sub title space
   - content: header
@@ -114,7 +164,7 @@ files:
   - content: ''
   functions: []
   function_count: 6
-- name: transactions_view.dart - 84 lines
+- name: transactions_view.dart - 88 lines
   notations:
   - content: 'endDrawer: _buildRightDrawer(context),'
   functions: []
@@ -123,15 +173,11 @@ files:
   notations:
   - content: 0
   - content: 0
+  - content: Distribui o espaço igualmente entre os itens
   - content: 22
   functions: []
   function_count: 2
-- name: campaign_list_widget.dart - 66 lines
-  notations:
-  - content: 40
-  functions: []
-  function_count: 1
-- name: collect_list_widget.dart - 562 lines
+- name: collect_list_widget.dart - 566 lines
   notations:
   - content: funcional
   - content: 3
@@ -158,36 +204,21 @@ files:
   - content: 8
   functions: []
   function_count: 3
-- name: content_activation_form_widget.dart - 342 lines
+- name: content_activation_form_widget.dart - 364 lines
   notations:
   - content: model data Presence
   - content: 9
-  - content: 7
-  - content: 7
-  - content: Update the UI if this is in a StatefulWidget
-  - content: 12
   - content: find's on presences array the element with received doc_type
-  - content: _keyController.addListener(_checkValidKey);
   - content: profilePresences should be already in storage identifation
   - content: 7
-  - content: _keyController.removeListener(_checkValidKey);
   - content: height size adapted by child height size
   - content: close activation dialog
-  - content: async call simulation
+  - content: change to 'error' to test
+  - content: change to 'error' to test
+  - content: 2
   - content: 3
-  - content: 'validator: _validateKey,'
-  functions:
-  - name: _goToStep
-    description: verify if presences any signature type
-    signature:
-    - type: string, cnpj || cpf, passport, drive license
-    return: object
-  - name: getPresence
-    description: verify if presences has professional id
-    signature:
-    - type: string, cnpj || cpf, passport, drive license
-    return: object
-  function_count: 9
+  functions: []
+  function_count: 8
 - name: content_campaign_form_widget.dart - 859 lines
   notations:
   - content: 'final _allocatedController = MaskedTextController(mask: ''000.000.000,00000'');'
@@ -203,10 +234,11 @@ files:
   - content: sendButton
   functions: []
   function_count: 14
-- name: content_configuration_form_widget.dart - 1358 lines
+- name: content_configuration_form_widget.dart - 1401 lines
   notations:
   - content: 9
   - content: Update the UI if this is in a StatefulWidget
+  - content: 6
   - content: 6
   - content: 6
   - content: 6
@@ -220,7 +252,7 @@ files:
   - content: const SendButton()
   - content: professional profile - contact name
   - content: professional profile - whatsapp phone contact
-  - content: ''
+  - content: action();
   functions:
   - name: checkCNPJ
     description: verify if presences has professional id
@@ -234,7 +266,10 @@ files:
   - name: checkCPF
     description: verify if presences has personal id
     signature: []
-  function_count: 22
+  - name: isValidCNPJ
+    description: verify consistency for "CNPJ" field
+    signature: []
+  function_count: 26
 - name: custom_snackbar_widget.dart - 119 lines
   notations:
   - content: 14
@@ -251,7 +286,7 @@ files:
   - content: 'child: ContentConfigurationFormWidget(profilePresences),'
   functions: []
   function_count: 1
-- name: received_note_list_widget.dart - 299 lines
+- name: received_note_list_widget.dart - 309 lines
   notations:
   - content: funcional
   - content: Declare the parameter

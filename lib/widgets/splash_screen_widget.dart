@@ -48,8 +48,15 @@ class _SplashScreenState extends State<SplashScreenWidget> {
         });
 
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ReceivedNotesView(profileData: profileData)));
-
+            context,
+            MaterialPageRoute(
+                builder: (context) => ReceivedNotesView(
+                        profileData: profileData,
+                        message: const {
+                          "available": false,
+                          "type": "",
+                          "message": ""
+                        })));
       }).catchError((e) {
         /* catch error and recovery
         if (uniqueId != null) {
@@ -102,7 +109,7 @@ class _SplashScreenState extends State<SplashScreenWidget> {
             Text(_statusMessage,  // Step 3: Display the status message
                 style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 14,
                 ))
           ],
         ),

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mrcatcash/models/profile_data.dart';
-import 'package:mrcatcash/widgets/coming_bind_list_widget.dart';
-import 'package:mrcatcash/widgets/copyable_wallet_number_widget.dart';
+import 'package:mrcatcash/widgets/lists/coming_bind_list_widget.dart';
+import 'package:mrcatcash/widgets/components/copyable_wallet_number_widget.dart';
+import 'package:mrcatcash/widgets/sections/section_area_panel_widget.dart';
 import '../services/api_service.dart';
+import '../widgets/components/custom_snackbar_widget.dart';
+import '../widgets/modals/modal_configuration_form_widget.dart';
+import '../widgets/update_profile_screen_widget.dart';
+import '../widgets/whats_app_group_link_widget.dart';
 
 class ComingBindsView extends StatefulWidget {
   const ComingBindsView({super.key, required this.data});
+
   final ProfileData data;
 
   @override
@@ -13,21 +19,16 @@ class ComingBindsView extends StatefulWidget {
 }
 
 class _ComingBindsViewState extends State<ComingBindsView> {
-  final ApiService apiService = ApiService(); // Initialize the API service
-  late ProfileData profile = ProfileData(
-      uniqueId: '',
-      createdAt: DateTime.now(),
-      vouchers: Vouchers(valid: 0, invalid: 0, count: 0),
-      tokens: Tokens(amount: '0,0', collected: 0),
-      currency: Currency(amount: '0.0')
-  );
+  final ApiService apiService = ApiService();
+
+  late ProfileData profile = widget.data;
   late Map shard = {};
 
   Future<Map<String, dynamic>> fetchComingBinds() async {
     return apiService.fetchReceivedNotes();
   }
   Future<Map<String, dynamic>> fetchShards() async {
-    return apiService.fetchShards();
+    return apiService.fetchShards('');
   }
 
   late Future<List<dynamic>> comingBindsFuture; // Fetching binds
@@ -36,136 +37,178 @@ class _ComingBindsViewState extends State<ComingBindsView> {
   @override
   void initState() {
     super.initState();
-    apiService.fetchProfileData().then((response) {
-      profile = response;
-    });
+  }
+
+  Widget _buildDrawer(BuildContext context, profileData, profilePresences) {
+    String appVersion = 'v.1.0.1 - Fluffy You';
+    var activeProfile = widget.data;
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+              decoration: const BoxDecoration(color: Color(0xFFFED86A)),
+              child: WhatsAppGroupLinkWidget(
+                groupUrl: 'https://chat.whatsapp.com/JpV6E3uIsQp980vjdIRKFR',
+                linkText: 'Teste Fechado - WhatsApp',
+              ).getLink(context)),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/paw-mark.png',
+              width: 32.0, // Largura da imagem
+              height: 32.0, // Altura da imagem
+              fit: BoxFit.contain, // Ajusta o tamanho da imagem conforme necessário
+            ),
+            title: const Text(
+              'Pawllet',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onTap: null,
+          ),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/resources-037.png',
+              width: 32.0,
+              height: 32.0,
+              fit: BoxFit.contain,
+            ),
+            title: Text(
+              'R\$ ${activeProfile.currency.amount} *',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onTap: null,
+          ),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/resources-029.png',
+              width: 32.0,
+              height: 32.0,
+              fit: BoxFit.contain,
+            ),
+            title: Text(
+              '${activeProfile.tokens.amount} \$MC3',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onTap: null,
+          ),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/resources-018.png',
+              width: 32.0,
+              height: 32.0,
+              fit: BoxFit.contain,
+            ),
+            title: const Text(
+              '0,0%',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            onTap: null,
+          ),
+          const Divider(color: Colors.black12, height: 1),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/menu-settings.png',
+              width: 32.0,
+              height: 32.0,
+              fit: BoxFit.contain,
+            ),
+            title: const Text(
+              'Configuração',
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 15,
+              ),
+            ),
+            onTap: () {
+              ModalConfigurationFormWidget.show(
+                  context, profileData, profilePresences);
+            },
+          ),
+          const Divider(color: Colors.black12, height: 1),
+          ListTile(
+            leading: Image.asset(
+              'assets/images/resources-026.png',
+              width: 32.0,
+              height: 32.0,
+              fit: BoxFit.contain,
+            ),
+            title: const Text(
+              '~ ! clear ! ~',
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                fontSize: 15,
+              ),
+            ),
+            onTap: () {
+              apiService.cleanPresence().then((result) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const UpdateProfileScreenWidget(message: {
+                              "type": "info",
+                              "message": "informações do perfil foram limpas"
+                            })));
+              });
+            },
+          ), // Outro divisor
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var activeProfile = profile;
-    apiService.fetchShards().then((response) {
-      shard = response['data'][1];
-    });
-
-    late String until_next_shard = shard['next_execution_in']?? "00:00:00";
 
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false, // Removes the back button
-          backgroundColor: const Color(0xFFFED86A),
-          title: const Text(
-            'Histórico', style: TextStyle(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xFFFED86A),
+        title: const Text('', style: TextStyle(
             fontSize: 24, fontWeight: FontWeight.bold,
-          ), textAlign: TextAlign.center,)
-      ),
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Column(
-        children: [
-          Container(
-            constraints: const BoxConstraints(
-                minHeight: 60, minWidth: double.infinity, maxWidth: double.infinity
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 24.0),
-                  child: CopyableWalletNumberWidget(uniqueId: activeProfile.uniqueId),
-                ),
-              ],
-            ),
-          ), /* Coming Bind Header */
-          Container(
-            constraints: const BoxConstraints(
-                minWidth: double.infinity, maxWidth: double.infinity
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 0.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RichText(
-                              text: TextSpan(
-                                  style: const TextStyle(
-                                      fontSize: 14,
-                                      height: 1.5,
-                                      color: Colors.black,
-                                      letterSpacing: 1.5),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: 'Próximo colheita em: $until_next_shard',
-                                      style: TextStyle(fontWeight: FontWeight.normal),
-                                    )
-                                  ])),
-                        ],
-                      )
-                ))
-              ],
-            ),
-          ),
-          Container(
-            constraints: const BoxConstraints(
-              minWidth: double.infinity,
-              maxWidth: double.infinity,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,  /* centraliza horizontal */
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10.0),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  height: 1.5,
-                                  color: Colors.black,
-                                  letterSpacing: 1.5
-                              ),
-                              children: <TextSpan>[
-                                const TextSpan(
-                                  text: 'Valores Processados: ',
-                                  style: TextStyle(fontWeight: FontWeight.normal),
-                                ),
-                                TextSpan(
-                                  text: 'R\$ ${activeProfile.currency.amount}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          /*
-                          Text(
-                              'Valores Processados R\$ ${activeProfile.currency.amount}',
-                              style: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold
-                              )),   /* display profile data */ */
-                          const SizedBox(width: 8.0),
-                          Image.asset(
-                            'assets/images/resources-006.png',
-                            width: 24.0, height: 24.0, fit: BoxFit.contain,
-                          ),
-                        ],
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20.0),
-                      ),/* */
-                    ],
+          ), textAlign: TextAlign.center ),
+        actions: [
+          Builder(builder: (context) {
+              return IconButton(
+                icon: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()..scale(-1.0, 1.0),
+                  child: Image.asset(
+                    'assets/images/background-cat-ii.gif',
+                    width: 42, height: 42,
                   ),
                 ),
-              ],
-            ),
-          ), // subtitulo da view
-          ComingBindListWidget(profileData: activeProfile)
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
+          )
+        ],
+      ),
+      backgroundColor: const Color(0xFFF5F5F5),
+      drawer: _buildDrawer(context, activeProfile, []),
+      body: Column(
+        children: [
+          SectionAreaPanelWidget(
+              uniqueId: activeProfile.uniqueId, viewNameFor: 'coming_bind'
+          ),
+          const ComingBindListWidget()
         ],
       ),
     );

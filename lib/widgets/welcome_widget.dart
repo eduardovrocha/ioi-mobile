@@ -62,7 +62,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   ),
                   RichText(
                     text: const TextSpan(
-                      style: TextStyle(fontSize: 12, color: Colors.black,
+                      style: TextStyle(fontSize: 14, color: Colors.black,
                         height: 1.5),
                       // Estilo base do texto
                       children: <TextSpan>[
@@ -71,20 +71,20 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                               'te dar um Pefil de acesso \'Visitante\' até que '
                               'consiga subir de nível. ',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                         ),
                         TextSpan(
                           text: 'Você vai receber também, uma carteira '
                               'digital, parecida com essa mostrada logo a baixo. ',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                         ),
                         TextSpan(
                           text: 'Se ganhar alguma coisa, vou enviar para ela.',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 14,
                           ),
                         ),
                       ],
@@ -115,7 +115,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                   const Text(
                     'Carteira Digital',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: Colors.grey,
                     ),
                   ),
@@ -147,7 +147,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 ),
                 const Text(
                   'Eu aceito criar um acesso',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 14),
                 ),
               ],
             ),
@@ -168,7 +168,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                               'Precisa aceitar criar um acesso',
                               style: TextStyle(
                                 color: Colors.blueGrey, // Define a cor do texto
-                                fontSize: 16, // Opcional: Define o tamanho da fonte
+                                fontSize: 14, // Opcional: Define o tamanho da fonte
                               ),
                             ),
                           ),
@@ -226,7 +226,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 'Perfil criado com sucesso',
                 style: TextStyle(
                   color: Colors.blueGrey, // Define a cor do texto
-                  fontSize: 16, // Opcional: Define o tamanho da fonte
+                  fontSize: 14, // Opcional: Define o tamanho da fonte
                 ),
               ),
             ),
@@ -255,7 +255,10 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(
               builder: (context) =>
-                  ReceivedNotesView(profileData: profileData)));
+                  ReceivedNotesView(profileData: profileData, message: const {
+                    "type": "success",
+                    "message": "perfil atualizado com sucesso"
+                  })));
     });
   }
 }

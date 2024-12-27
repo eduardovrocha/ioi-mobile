@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mrcatcash/models/profile_data.dart';
 import 'package:mrcatcash/views/received_notes_view.dart';
-import 'package:mrcatcash/widgets/copyable_wallet_number_widget.dart';
+import 'package:mrcatcash/widgets/components/copyable_wallet_number_widget.dart';
 import '../services/api_service.dart';
 
 class CampaignsView extends StatefulWidget {
@@ -18,23 +18,15 @@ class _CampaignsViewState extends State<CampaignsView> {
   final ApiService apiService = ApiService(); // Initialize the API service
   late ProfileData profile = ProfileData(
       uniqueId: '',
-      createdAt: DateTime.now(),
-      vouchers: Vouchers(valid: 0, invalid: 0, count: 0),
-      tokens: Tokens(amount: '0,0', collected: 0),
-      currency: Currency(amount: '0.0')
+      createdAt: '00/00/0000 - 00:00:00',
+      vouchers: Vouchers(valid: '0', invalid: '0', count: '0'),
+      tokens: Tokens(amount: '0,0', collected: '0,0', allocated: '0,0'),
+      currency: Currency(amount: '0.0'),
+      presences: Presences(
+          professional: { 'created': DateTime(2024, 11, 09), 'active': false },
+          personal: { 'created': DateTime(2024, 11, 09), 'active': false }
+      )
   );
-
-  /* late Map shard = {}; */
-
-  /* Future<Map<String, dynamic>> fetchComingBinds() async {
-    return apiService.fetchReceivedNotes();
-  }
-  Future<Map<String, dynamic>> fetchShards() async {
-    return apiService.fetchShards();
-  } */
-
-  /* late Future<List<dynamic>> comingBindsFuture; // Fetching binds
-  late Future<List<dynamic>> comingShardsFuture; */
 
   @override
   void initState() {
@@ -71,7 +63,9 @@ class _CampaignsViewState extends State<CampaignsView> {
                 ),
                 onPressed: () {
                   Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => ReceivedNotesView(profileData: activeProfile)),
+                    context, MaterialPageRoute(builder: (context) =>
+                      ReceivedNotesView(profileData: activeProfile, message:
+                      {},)),
                   );
                 },
               );
@@ -81,11 +75,10 @@ class _CampaignsViewState extends State<CampaignsView> {
       ),
       backgroundColor: const Color(0xFFF5F5F5),
       /* endDrawer: _buildRightDrawer(context), */
-      body: Stack(
+      body: const Stack(
         children: [
           Column(
             children: [
-              
             ],
           ),
         ],
